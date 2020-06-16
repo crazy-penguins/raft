@@ -3,7 +3,7 @@ import re
 from contextlib import contextmanager
 
 try:
-    from invoke.vendor.six import raise_from, iteritems
+    from raft.vendor.six import raise_from, iteritems
 except ImportError:
     from six import raise_from, iteritems
 

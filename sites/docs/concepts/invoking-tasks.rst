@@ -4,11 +4,11 @@
 Invoking tasks
 ==============
 
-This page explains how to invoke your tasks on the CLI, both in terms of parser
+This page explains how to raft your tasks on the CLI, both in terms of parser
 mechanics (how your tasks' arguments are exposed as command-line options) and
 execution strategies (which tasks actually get run, and in what order).
 
-(For details on Invoke's core flags and options, see :doc:`/invoke`.)
+(For details on raft's core flags and options, see :doc:`/raft`.)
 
 .. contents::
     :local:
@@ -19,12 +19,12 @@ execution strategies (which tasks actually get run, and in what order).
 Basic command line layout
 =========================
 
-Invoke may be executed as ``invoke`` (or ``inv`` for short) and its command
+raft may be executed as ``raft`` (or ``inv`` for short) and its command
 line layout looks like this::
 
     $ inv [--core-opts] task1 [--task1-opts] ... taskN [--taskN-opts]
 
-Put plainly, Invoke's `CLI parser <.Parser>` splits your command line up into
+Put plainly, raft's `CLI parser <.Parser>` splits your command line up into
 multiple "`parser contexts <.ParserContext>`" which allows it to reason about
 the args and options it will accept:
 
@@ -40,7 +40,7 @@ the args and options it will accept:
   numbers of tasks. (In practice, most users only execute one or two at a
   time.)
 
-For the core arguments and flags, see :doc:`/invoke`; for details on how your
+For the core arguments and flags, see :doc:`/raft`; for details on how your
 tasks affect the CLI, read onwards.
 
 .. note::
@@ -49,11 +49,11 @@ tasks affect the CLI, read onwards.
     there is no conflict with similarly-named/prefixed arguments of the
     being-parsed task.
 
-    For example, ``invoke mytask --echo`` will behave identically to ``invoke
+    For example, ``raft mytask --echo`` will behave identically to ``raft
     --echo mytask``, *unless* ``mytask`` has its own ``echo`` flag (in which
     case that flag is handed to the task context, as normal).
 
-    Similarly, ``invoke mytask -e`` will turn on command echoing too, unless
+    Similarly, ``raft mytask -e`` will turn on command echoing too, unless
     ``mytask`` has its own argument whose shortflag ends up set to ``-e`` (e.g.
     ``def mytask(env)``).
 
@@ -89,7 +89,7 @@ Type casting
 ------------
 
 Natively, a command-line string is just that -- a string -- requiring some
-leaps of logic to arrive at any non-string values on the Python end. Invoke has
+leaps of logic to arrive at any non-string values on the Python end. raft has
 a number of these tricks already at hand, and more will be implemented in the
 future. Currently:
 
@@ -123,7 +123,7 @@ given to ``--help`` as its argument value).
 When help is requested, you'll see the task's docstring (if any) and
 per-argument/flag help output::
 
-    $ inv --help build  # or invoke build --help
+    $ inv --help build  # or raft build --help
 
     Docstring:
       none
@@ -191,11 +191,11 @@ type inside ``@task``::
 When optional flag values are used, the values seen post-parse follow these
 rules:
 
-* If the flag is not given at all (``invoke compile``) the default value
+* If the flag is not given at all (``raft compile``) the default value
   is filled in as normal.
-* If it is given with a value (``invoke compile --log=foo.log``) then the value
+* If it is given with a value (``raft compile --log=foo.log``) then the value
   is stored normally.
-* If the flag is given with no value (``invoke compile --log``), it is treated
+* If the flag is given with no value (``raft compile --log``), it is treated
   as if it were a ``bool`` and set to ``True``.
 
 Resolving ambiguity
@@ -210,7 +210,7 @@ takes an optional value:
   or
 * When that token has the same name as another task.
 
-In most of these situations, Invoke's parser will `refuse the temptation to
+In most of these situations, raft's parser will `refuse the temptation to
 guess
 <http://zen-of-python.info/in-the-face-of-ambiguity-refuse-the-temptation-to-guess.html#12>`_
 and raise an error.
@@ -222,7 +222,7 @@ context is checked to resolve the ambiguity:
   meant to give that argument immediately after the current one, and no
   optional value is set.
 
-    - E.g. in ``invoke compile --log --verbose`` (assuming ``--verbose`` is
+    - E.g. in ``raft compile --log --verbose`` (assuming ``--verbose`` is
       another legit argument for ``compile``) the parser decides the user meant
       to give ``--log`` without a value, and followed it up with the
       ``--verbose`` flag.
@@ -231,7 +231,7 @@ context is checked to resolve the ambiguity:
   the current flag.
 
     - E.g. if ``--verbose`` is *not* a legitimate argument for ``compile``,
-      then ``invoke compile --log --verbose`` causes the parser to assign
+      then ``raft compile --log --verbose`` causes the parser to assign
       ``"--verbose"`` as the value given to ``--log``. (This will probably
       cause other problems in our contrived use case, but it illustrates our
       point.)
@@ -243,12 +243,12 @@ Iterable flag values
 
 A not-uncommon use case for CLI programs is the desire to build a list of
 values for a given option, instead of a single value. While this *can* be done
-via sub-string parsing -- e.g. having users invoke a command with ``--mylist
+via sub-string parsing -- e.g. having users raft a command with ``--mylist
 item1,item2,item3`` and splitting on the comma -- it's often preferable to
 specify the option multiple times and store the values in a list (instead of
 overwriting or erroring.)
 
-In Invoke, this is enabled by hinting to the parser that one or more task
+In raft, this is enabled by hinting to the parser that one or more task
 arguments are ``iterable`` in nature (similar to how one specifies ``optional``
 or ``positional``)::
 
@@ -323,7 +323,7 @@ valid in Python identifiers::
 
     $ inv mytask --my-option
 
-Invoke works around this by automatically generating dashed versions of
+raft works around this by automatically generating dashed versions of
 underscored names, when it turns your task function signatures into
 command-line parser flags.
 
@@ -331,7 +331,7 @@ Therefore, the two examples above actually work fine together -- ``my_option``
 ends up mapping to ``--my-option``.
 
 In addition, leading (``_myopt``) and trailing (``myopt_``) underscores are
-ignored, since ``invoke ---myopt`` and ``invoke --myopt-`` don't make much
+ignored, since ``raft ---myopt`` and ``raft --myopt-`` don't make much
 sense.
 
 .. _boolean-flags:
@@ -352,7 +352,7 @@ can be easily disabled. For example, colored output::
         # ...
 
 Here, what we really want on the command line is a ``--no-color`` flag that
-sets ``color=False``. Invoke handles this for you: when setting up CLI flags,
+sets ``color=False``. raft handles this for you: when setting up CLI flags,
 booleans which default to ``True`` generate a ``--no-<name>`` flag instead.
 
 
@@ -416,12 +416,12 @@ as::
     def build(c):
         print("Building")
 
-As before, ``invoke build`` would cause ``clean`` to run, then ``build``.
+As before, ``raft build`` would cause ``clean`` to run, then ``build``.
 
 Recursive/chained pre/post-tasks
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Pre-tasks of pre-tasks will also be invoked (as will post-tasks of pre-tasks,
+Pre-tasks of pre-tasks will also be raftd (as will post-tasks of pre-tasks,
 pre-tasks of post-tasks, etc) in a depth-first manner, recursively. Here's a
 more complex (if slightly contrived) tasks file::
 

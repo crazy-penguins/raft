@@ -2,13 +2,13 @@ import json
 import os
 import sys
 
-from invoke.util import six, Lexicon
+from raft.util import six, Lexicon
 from mock import patch, Mock, ANY
 import pytest
 from pytest import skip
 from pytest_relaxed import trap
 
-from invoke import (
+from raft import (
     Argument,
     Collection,
     Config,
@@ -21,9 +21,9 @@ from invoke import (
     Task,
     UnexpectedExit,
 )
-from invoke import main
-from invoke.util import cd
-from invoke.config import merge_dicts
+from raft import main
+from raft.util import cd
+from raft.config import merge_dicts
 
 from _util import (
     ROOT,
@@ -85,15 +85,15 @@ class Program_:
 
         def debug_flag_activates_logging(self):
             # Have to patch our logger to get in before logcapture kicks in.
-            with patch("invoke.util.debug") as debug:
-                Program().run("invoke -d -c debugging foo")
+            with patch("raft.util.debug") as debug:
+                Program().run("raft -d -c debugging foo")
                 debug.assert_called_with("my-sentinel")
 
         def debug_honored_as_env_var_too(self, reset_environ):
             os.environ["INVOKE_DEBUG"] = "1"
-            with patch("invoke.util.debug") as debug:
+            with patch("raft.util.debug") as debug:
                 # NOTE: no use of -d/--debug
-                Program().run("invoke -c debugging foo")
+                Program().run("raft -c debugging foo")
                 debug.assert_called_with("my-sentinel")
 
         def bytecode_skipped_by_default(self):
@@ -105,7 +105,7 @@ class Program_:
             assert not sys.dont_write_bytecode
 
     class normalize_argv:
-        @patch("invoke.program.sys")
+        @patch("raft.program.sys")
         def defaults_to_sys_argv(self, mock_sys):
             argv = ["inv", "--version"]
             mock_sys.argv = argv
@@ -359,7 +359,7 @@ class Program_:
         def explicit_namespace_works_correctly(self):
             # Regression-ish test re #288
             ns = Collection.from_module(load("integration"))
-            expect("print-foo", out="foo\n", program=Program(namespace=ns))
+            expect("print_foo", out="foo\n", program=Program(namespace=ns))
 
         def allows_explicit_task_module_specification(self):
             expect("-c integration print-foo", out="foo\n")
@@ -382,7 +382,7 @@ class Program_:
                 )
 
         @trap
-        @patch("invoke.program.sys.exit")
+        @patch("raft.program.sys.exit")
         def ParseErrors_display_message_and_exit_1(self, mock_exit):
             p = Program()
             # Run with a definitely-parser-angering incorrect input; the fact
@@ -398,7 +398,7 @@ class Program_:
             mock_exit.assert_called_with(1)
 
         @trap
-        @patch("invoke.program.sys.exit")
+        @patch("raft.program.sys.exit")
         def UnexpectedExit_exits_with_code_when_no_hiding(self, mock_exit):
             p = Program()
             oops = UnexpectedExit(
@@ -414,7 +414,7 @@ class Program_:
             mock_exit.assert_called_with(17)
 
         @trap
-        @patch("invoke.program.sys.exit")
+        @patch("raft.program.sys.exit")
         def shows_UnexpectedExit_str_when_streams_hidden(self, mock_exit):
             p = Program()
             oops = UnexpectedExit(
@@ -452,7 +452,7 @@ ohnoz!
             mock_exit.assert_called_with(54)
 
         @trap
-        @patch("invoke.program.sys.exit")
+        @patch("raft.program.sys.exit")
         def UnexpectedExit_str_encodes_stdout_and_err(self, mock_exit):
             p = Program()
             oops = UnexpectedExit(
@@ -496,7 +496,7 @@ this is also not ascii: \xe4\x8c\xa1
             skip()
 
         @trap
-        @patch("invoke.program.sys.exit")
+        @patch("raft.program.sys.exit")
         def turns_KeyboardInterrupt_into_exit_code_1(self, mock_exit):
             p = Program()
             p.execute = Mock(side_effect=KeyboardInterrupt)
@@ -527,7 +527,7 @@ this is also not ascii: \xe4\x8c\xa1
                 # * fill terminal w/ columns + spacing
                 # * line-wrap help text in its own column
                 expected = """
-Usage: inv[oke] [--core-opts] task1 [--task1-opts] ... taskN [--taskN-opts]
+Usage: raft [--core-opts] task1 [--task1-opts] ... taskN [--taskN-opts]
 
 Core options:
 
@@ -597,7 +597,7 @@ Core options:
 
             def prints_help_for_task_only(self):
                 expected = """
-Usage: invoke [--core-opts] punch [--options] [other tasks here ...]
+Usage: raft [--core-opts] punch [--options] [other tasks here ...]
 
 Docstring:
   none
@@ -612,7 +612,7 @@ Options:
 
             def works_for_unparameterized_tasks(self):
                 expected = """
-Usage: invoke [--core-opts] biz [other tasks here ...]
+Usage: raft [--core-opts] biz [other tasks here ...]
 
 Docstring:
   none
@@ -631,7 +631,7 @@ Options:
 
             def displays_docstrings_if_given(self):
                 expected = """
-Usage: invoke [--core-opts] foo [other tasks here ...]
+Usage: raft [--core-opts] foo [other tasks here ...]
 
 Docstring:
   Foo the bar.
@@ -644,7 +644,7 @@ Options:
 
             def dedents_correctly(self):
                 expected = """
-Usage: invoke [--core-opts] foo2 [other tasks here ...]
+Usage: raft [--core-opts] foo2 [other tasks here ...]
 
 Docstring:
   Foo the bar:
@@ -661,7 +661,7 @@ Options:
 
             def dedents_correctly_for_alt_docstring_style(self):
                 expected = """
-Usage: invoke [--core-opts] foo3 [other tasks here ...]
+Usage: raft [--core-opts] foo3 [other tasks here ...]
 
 Docstring:
   Foo the other bar:
@@ -680,7 +680,7 @@ Options:
                 # TODO: find & test the other variants of this error case, such
                 # as core --help not exiting, --list not exiting, etc
                 expected = """
-Usage: invoke [--core-opts] punch [--options] [other tasks here ...]
+Usage: raft [--core-opts] punch [--options] [other tasks here ...]
 
 Docstring:
   none
@@ -744,7 +744,7 @@ Available tasks:
                 "explicit_root",
                 (
                     "top-level (other-top)",
-                    "sub-level.sub-task (sub-level, sub-level.other-sub)",
+                    "sub-level.sub_task (sub-level, sub-level.other_sub)",
                 ),
             )
 
@@ -789,7 +789,7 @@ Available tasks:
                                         set up.
   test (run-tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs.all (build.docs)           Build all doc formats.
   build.docs.html                       Build HTML output only.
@@ -797,7 +797,7 @@ Available tasks:
   build.python.all (build.python)       Build all Python packages.
   build.python.sdist                    Build classic style tar.gz.
   build.python.wheel                    Build a wheel.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -815,7 +815,7 @@ Default task: test
                 expected = """Available 'build' tasks:
 
   .all (.everything)      Build all necessary artifacts.
-  .c-ext (.ext)           Build our internal C extension.
+  .c_ext (.ext)           Build our internal C extension.
   .zap                    A silly way to clean.
   .docs.all (.docs)       Build all doc formats.
   .docs.html              Build HTML output only.
@@ -885,11 +885,11 @@ Default task: test
                                         set up.
   test (run-tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs [3 tasks]                  Tasks for managing Sphinx docs.
   build.python [3 tasks]                PyPI/etc distribution artifacts.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -909,7 +909,7 @@ Default task: test
                                         set up.
   test (run-tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs.all (build.docs)           Build all doc formats.
   build.docs.html                       Build HTML output only.
@@ -917,7 +917,7 @@ Default task: test
   build.python.all (build.python)       Build all Python packages.
   build.python.sdist                    Build classic style tar.gz.
   build.python.wheel                    Build a wheel.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -933,7 +933,7 @@ Default task: test
                 expected = """Available 'build' tasks (depth=1):
 
   .all (.everything)   Build all necessary artifacts.
-  .c-ext (.ext)        Build our internal C extension.
+  .c_ext (.ext)        Build our internal C extension.
   .zap                 A silly way to clean.
   .docs [3 tasks]      Tasks for managing Sphinx docs.
   .python [3 tasks]    PyPI/etc distribution artifacts.
@@ -967,7 +967,7 @@ Default task: test
                                         set up.
   test (run-tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs.all (build.docs)           Build all doc formats.
   build.docs.html                       Build HTML output only.
@@ -975,7 +975,7 @@ Default task: test
   build.python.all (build.python)       Build all Python packages.
   build.python.sdist                    Build classic style tar.gz.
   build.python.wheel                    Build a wheel.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -997,7 +997,7 @@ Default task: test
                                         set up.
   test (run-tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs.all (build.docs)           Build all doc formats.
   build.docs.html                       Build HTML output only.
@@ -1005,7 +1005,7 @@ Default task: test
   build.python.all (build.python)       Build all Python packages.
   build.python.sdist                    Build classic style tar.gz.
   build.python.wheel                    Build a wheel.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -1025,7 +1025,7 @@ Default task: test
   test* (run-tests)         Run the test suite with baked-in args.
   build                     Tasks for compiling static code and assets.
       .all* (.everything)   Build all necessary artifacts.
-      .c-ext (.ext)         Build our internal C extension.
+      .c_ext (.ext)         Build our internal C extension.
       .zap                  A silly way to clean.
       .docs                 Tasks for managing Sphinx docs.
           .all*             Build all doc formats.
@@ -1036,7 +1036,7 @@ Default task: test
           .sdist            Build classic style tar.gz.
           .wheel            Build a wheel.
   deploy                    How to deploy our code and configs.
-      .db (.db-servers)     Deploy to our database servers.
+      .db (.db_servers)     Deploy to our database servers.
       .everywhere*          Deploy to all targets.
       .web                  Update and bounce the webservers.
   provision                 System setup code.
@@ -1054,7 +1054,7 @@ Default task: test
                     expected = """Available 'build' tasks ('*' denotes collection defaults):
 
   .all* (.everything)   Build all necessary artifacts.
-  .c-ext (.ext)         Build our internal C extension.
+  .c_ext (.ext)         Build our internal C extension.
   .zap                  A silly way to clean.
   .docs                 Tasks for managing Sphinx docs.
       .all*             Build all doc formats.
@@ -1077,12 +1077,12 @@ Default 'build' task: .all
   test* (run-tests)         Run the test suite with baked-in args.
   build                     Tasks for compiling static code and assets.
       .all* (.everything)   Build all necessary artifacts.
-      .c-ext (.ext)         Build our internal C extension.
+      .c_ext (.ext)         Build our internal C extension.
       .zap                  A silly way to clean.
       .docs [3 tasks]       Tasks for managing Sphinx docs.
       .python [3 tasks]     PyPI/etc distribution artifacts.
   deploy                    How to deploy our code and configs.
-      .db (.db-servers)     Deploy to our database servers.
+      .db (.db_servers)     Deploy to our database servers.
       .everywhere*          Deploy to all targets.
       .web                  Update and bounce the webservers.
   provision                 System setup code.
@@ -1102,7 +1102,7 @@ Default task: test
   test* (run-tests)         Run the test suite with baked-in args.
   build                     Tasks for compiling static code and assets.
       .all* (.everything)   Build all necessary artifacts.
-      .c-ext (.ext)         Build our internal C extension.
+      .c_ext (.ext)         Build our internal C extension.
       .zap                  A silly way to clean.
       .docs                 Tasks for managing Sphinx docs.
           .all*             Build all doc formats.
@@ -1113,7 +1113,7 @@ Default task: test
           .sdist            Build classic style tar.gz.
           .wheel            Build a wheel.
   deploy                    How to deploy our code and configs.
-      .db (.db-servers)     Deploy to our database servers.
+      .db (.db_servers)     Deploy to our database servers.
       .everywhere*          Deploy to all targets.
       .web                  Update and bounce the webservers.
   provision                 System setup code.
@@ -1130,7 +1130,7 @@ Default task: test
                     expected = """Available 'build' tasks (depth=1; '*' denotes collection defaults):
 
   .all* (.everything)   Build all necessary artifacts.
-  .c-ext (.ext)         Build our internal C extension.
+  .c_ext (.ext)         Build our internal C extension.
   .zap                  A silly way to clean.
   .docs [3 tasks]       Tasks for managing Sphinx docs.
   .python [3 tasks]     PyPI/etc distribution artifacts.
@@ -1280,21 +1280,21 @@ Default 'build' task: .all
         class runtime_config_file:
             def can_be_set_via_cli_option(self):
                 with cd("configs"):
-                    expect("-c runtime -f yaml/invoke.yaml mytask")
+                    expect("-c runtime -f yaml/raft.yaml mytask")
 
             def can_be_set_via_env(self, reset_environ):
-                os.environ["INVOKE_RUNTIME_CONFIG"] = "yaml/invoke.yaml"
+                os.environ["RAFT_RUNTIME_CONFIG"] = "yaml/raft.yaml"
                 with cd("configs"):
                     expect("-c runtime mytask")
 
             def cli_option_wins_over_env(self, reset_environ):
                 # Set env var to load the JSON config instead of the YAML one,
                 # which contains a "json" string internally.
-                os.environ["INVOKE_RUNTIME_CONFIG"] = "json/invoke.json"
+                os.environ["RAFT_RUNTIME_CONFIG"] = "json/raft.json"
                 with cd("configs"):
                     # But run the default test task, which expects a "yaml"
                     # string. If the env var won, this would explode.
-                    expect("-c runtime -f yaml/invoke.yaml mytask")
+                    expect("-c runtime -f yaml/raft.yaml mytask")
 
         def tasks_dedupe_honors_configuration(self):
             # Kinda-sorta duplicates some tests in executor.py, but eh.
@@ -1332,7 +1332,7 @@ post2
         # * warn (run.warn)
 
         def env_vars_load_with_prefix(self, monkeypatch):
-            monkeypatch.setenv("INVOKE_RUN_ECHO", "1")
+            monkeypatch.setenv("RAFT_RUN_ECHO", "1")
             expect("-c contextualized check-echo")
 
         def env_var_prefix_can_be_overridden(self, monkeypatch):
@@ -1352,7 +1352,7 @@ post2
             p.run("inv -c contextualized check-hide")
 
     class other_behavior:
-        @patch("invoke.program.getpass.getpass")
+        @patch("raft.program.getpass.getpass")
         def sudo_prompt_up_front(self, getpass):
             getpass.return_value = "mypassword"
             # Task under test makes expectations re: sudo config (doesn't
@@ -1361,7 +1361,7 @@ post2
             with support_path():
                 try:
                     Program().run(
-                        "inv --prompt-for-sudo-password -c sudo_prompt expect-config"  # noqa
+                        "raft --prompt-for-sudo-password -c sudo_prompt expect-config"  # noqa
                     )
                 except SystemExit as e:
                     # If inner call failed, we'll already have seen its output,

@@ -5,7 +5,7 @@ import time
 from mock import Mock
 from pytest import skip, raises
 
-from invoke import (
+from raft import (
     run,
     Local,
     Context,

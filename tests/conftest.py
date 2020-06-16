@@ -3,7 +3,7 @@ import os
 import sys
 import termios
 
-from invoke.vendor.six import iteritems
+from raft.vendor.six import iteritems
 import pytest
 from mock import patch
 

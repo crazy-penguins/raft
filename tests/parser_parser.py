@@ -1,6 +1,6 @@
 from pytest import raises
 
-from invoke.parser import Parser, Context, Argument, ParseError
+from raft.parser import Parser, Context, Argument, ParseError
 
 
 class Parser_:

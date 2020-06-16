@@ -470,7 +470,7 @@ class Runner(object):
         # NOTE: this is kept outside the 'finally' so that main-thread
         # exceptions are raised before worker-thread exceptions; they're more
         # likely to be Big Serious Problems.
-        if thread_exceptions:
+        if thread_exceptions and not self.opts["warn"]:
             raise ThreadException(thread_exceptions)
         # Collate stdout/err, calculate exited, and get final result obj
         result = self._collate_result(watcher_errors)

@@ -100,7 +100,7 @@ class Collection(object):
         self.auto_dash_names = kwargs.pop("auto_dash_names", None)
         # splat-kwargs version of default value (auto_dash_names=True)
         if self.auto_dash_names is None:
-            self.auto_dash_names = True
+            self.auto_dash_names = False
         # Name if applicable
         args = list(args)
         if args and isinstance(args[0], six.string_types):

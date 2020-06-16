@@ -1,6 +1,6 @@
 "How to deploy our code and configs."
 
-from invoke import task
+from raft import task
 
 
 @task(default=True)

@@ -5,11 +5,11 @@ import sys
 from pytest import skip
 from pytest_relaxed import trap
 
-from invoke.util import six
+from raft.util import six
 
-from invoke import run
-from invoke._version import __version__
-from invoke.terminals import WINDOWS
+from raft import run
+from raft._version import __version__
+from raft.terminals import WINDOWS
 
 from _util import only_utf8
 

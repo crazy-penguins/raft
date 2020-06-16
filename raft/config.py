@@ -421,7 +421,7 @@ class Config(DataProxy):
     .. versionadded:: 1.0
     """
 
-    prefix = "invoke"
+    prefix = "raft"
     file_prefix = None
     env_prefix = None
 

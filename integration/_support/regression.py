@@ -12,7 +12,7 @@ ideal world this would be truly part of the integration test suite, but:
 
 import sys
 
-from invoke import task
+from raft import task
 
 
 @task

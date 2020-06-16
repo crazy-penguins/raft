@@ -2,14 +2,14 @@ import pickle
 import os
 from os.path import join, expanduser
 
-from invoke.util import six
+from raft.util import six
 from mock import patch, call, Mock
 import pytest
 from pytest_relaxed import raises
 
-from invoke.runners import Local
-from invoke.config import Config
-from invoke.exceptions import (
+from raft.runners import Local
+from raft.config import Config
+from raft.exceptions import (
     AmbiguousEnvVar,
     UncastableEnvVar,
     UnknownFileType,
@@ -36,8 +36,8 @@ class Config_:
     class class_attrs:
         # TODO: move all other non-data-bearing kwargs to this mode
         class prefix:
-            def defaults_to_invoke(self):
-                assert Config().prefix == "invoke"
+            def defaults_to_raft(self):
+                assert Config().prefix == "raft"
 
             @patch.object(Config, "_load_yaml")
             def informs_config_filenames(self, load_yaml):
@@ -138,7 +138,7 @@ class Config_:
             # This is a bit funky but more useful than just replicating the
             # same test farther down?
             Config(system_prefix="meh/")
-            load_yaml.assert_any_call("meh/invoke.yaml")
+            load_yaml.assert_any_call("meh/raft.yaml")
 
         @skip_if_windows
         @patch.object(Config, "_load_yaml")
@@ -146,22 +146,22 @@ class Config_:
             # TODO: make this work on Windows somehow without being a total
             # tautology? heh.
             Config()
-            load_yaml.assert_any_call("/etc/invoke.yaml")
+            load_yaml.assert_any_call("/etc/raft.yaml")
 
         @patch.object(Config, "_load_yaml")
         def configure_user_location_prefix(self, load_yaml):
             Config(user_prefix="whatever/")
-            load_yaml.assert_any_call("whatever/invoke.yaml")
+            load_yaml.assert_any_call("whatever/raft.yaml")
 
         @patch.object(Config, "_load_yaml")
         def default_user_prefix_is_homedir_plus_dot(self, load_yaml):
             Config()
-            load_yaml.assert_any_call(expanduser("~/.invoke.yaml"))
+            load_yaml.assert_any_call(expanduser("~/.raft.yaml"))
 
         @patch.object(Config, "_load_yaml")
         def configure_project_location(self, load_yaml):
             Config(project_location="someproject").load_project()
-            load_yaml.assert_any_call(join("someproject", "invoke.yaml"))
+            load_yaml.assert_any_call(join("someproject", "raft.yaml"))
 
         @patch.object(Config, "_load_yaml")
         def configure_runtime_path(self, load_yaml):
@@ -597,12 +597,12 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
             assert c.outer.inner.hooray == "yml"
 
         def runtime_conf_via_cli_flag(self):
-            c = Config(runtime_path=join(CONFIGS_PATH, "yaml", "invoke.yaml"))
+            c = Config(runtime_path=join(CONFIGS_PATH, "yaml", "raft.yaml"))
             c.load_runtime()
             assert c.outer.inner.hooray == "yaml"
 
         def runtime_can_skip_merging(self):
-            path = join(CONFIGS_PATH, "yaml", "invoke.yaml")
+            path = join(CONFIGS_PATH, "yaml", "raft.yaml")
             config = Config(runtime_path=path, lazy=True)
             assert "outer" not in config._runtime
             assert "outer" not in config
@@ -637,7 +637,7 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
             with pytest.raises(UnpicklableConfigMember, match=expected):
                 c.load_runtime(merge=False)
 
-        @patch("invoke.config.debug")
+        @patch("raft.config.debug")
         def nonexistent_files_are_skipped_and_logged(self, mock_debug):
             c = Config()
             c._load_yml = Mock(side_effect=IOError(2, "aw nuts"))
@@ -690,45 +690,45 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
         "Environment variables"
 
         def base_case_defaults_to_INVOKE_prefix(self):
-            os.environ["INVOKE_FOO"] = "bar"
+            os.environ["RAFT_FOO"] = "bar"
             c = Config(defaults={"foo": "notbar"})
             c.load_shell_env()
             assert c.foo == "bar"
 
         def non_predeclared_settings_do_not_get_consumed(self):
-            os.environ["INVOKE_HELLO"] = "is it me you're looking for?"
+            os.environ["RAFT_HELLO"] = "is it me you're looking for?"
             c = Config()
             c.load_shell_env()
             assert "HELLO" not in c
             assert "hello" not in c
 
         def underscores_top_level(self):
-            os.environ["INVOKE_FOO_BAR"] = "biz"
+            os.environ["RAFT_FOO_BAR"] = "biz"
             c = Config(defaults={"foo_bar": "notbiz"})
             c.load_shell_env()
             assert c.foo_bar == "biz"
 
         def underscores_nested(self):
-            os.environ["INVOKE_FOO_BAR"] = "biz"
+            os.environ["RAFT_FOO_BAR"] = "biz"
             c = Config(defaults={"foo": {"bar": "notbiz"}})
             c.load_shell_env()
             assert c.foo.bar == "biz"
 
         def both_types_of_underscores_mixed(self):
-            os.environ["INVOKE_FOO_BAR_BIZ"] = "baz"
+            os.environ["RAFT_FOO_BAR_BIZ"] = "baz"
             c = Config(defaults={"foo_bar": {"biz": "notbaz"}})
             c.load_shell_env()
             assert c.foo_bar.biz == "baz"
 
         @raises(AmbiguousEnvVar)
         def ambiguous_underscores_dont_guess(self):
-            os.environ["INVOKE_FOO_BAR"] = "biz"
+            os.environ["RAFT_FOO_BAR"] = "biz"
             c = Config(defaults={"foo_bar": "wat", "foo": {"bar": "huh"}})
             c.load_shell_env()
 
         class type_casting:
             def strings_replaced_with_env_value(self):
-                os.environ["INVOKE_FOO"] = u"myvalue"
+                os.environ["RAFT_FOO"] = u"myvalue"
                 c = Config(defaults={"foo": "myoldvalue"})
                 c.load_shell_env()
                 assert c.foo == u"myvalue"
@@ -739,14 +739,14 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
                 # os.environ, so the test makes no sense there.
                 if six.PY3:
                     return
-                os.environ["INVOKE_FOO"] = "myunicode"
+                os.environ["RAFT_FOO"] = "myunicode"
                 c = Config(defaults={"foo": u"myoldvalue"})
                 c.load_shell_env()
                 assert c.foo == "myunicode"
                 assert isinstance(c.foo, str)
 
             def None_replaced(self):
-                os.environ["INVOKE_FOO"] = "something"
+                os.environ["RAFT_FOO"] = "something"
                 c = Config(defaults={"foo": None})
                 c.load_shell_env()
                 assert c.foo == "something"
@@ -759,14 +759,14 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
                     ("meh", True),
                     ("false", True),
                 ):
-                    os.environ["INVOKE_FOO"] = input_
+                    os.environ["RAFT_FOO"] = input_
                     c = Config(defaults={"foo": bool()})
                     c.load_shell_env()
                     assert c.foo == result
 
             def boolean_type_inputs_with_non_boolean_defaults(self):
                 for input_ in ("0", "1", "", "meh", "false"):
-                    os.environ["INVOKE_FOO"] = input_
+                    os.environ["RAFT_FOO"] = input_
                     c = Config(defaults={"foo": "bar"})
                     c.load_shell_env()
                     assert c.foo == input_
@@ -782,13 +782,13 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
                 if not six.PY3:
                     tests.append((long, "5", long(5)))  # noqa
                 for old, new_, result in tests:
-                    os.environ["INVOKE_FOO"] = new_
+                    os.environ["RAFT_FOO"] = new_
                     c = Config(defaults={"foo": old()})
                     c.load_shell_env()
                     assert c.foo == result
 
             def arbitrary_types_work_too(self):
-                os.environ["INVOKE_FOO"] = "whatever"
+                os.environ["RAFT_FOO"] = "whatever"
 
                 class Meh(object):
                     def __init__(self, thing=None):
@@ -803,7 +803,7 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
             class uncastable_types:
                 @raises(UncastableEnvVar)
                 def _uncastable_type(self, default):
-                    os.environ["INVOKE_FOO"] = "stuff"
+                    os.environ["RAFT_FOO"] = "stuff"
                     c = Config(defaults={"foo": default})
                     c.load_shell_env()
 
@@ -868,41 +868,41 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
             assert c.outer.inner.hooray == "yaml"
 
         def env_vars_override_project(self):
-            os.environ["INVOKE_OUTER_INNER_HOORAY"] = "env"
+            os.environ["RAFT_OUTER_INNER_HOORAY"] = "env"
             c = Config(project_location=join(CONFIGS_PATH, "yaml"))
             c.load_project()
             c.load_shell_env()
             assert c.outer.inner.hooray == "env"
 
         def env_vars_override_user(self):
-            os.environ["INVOKE_OUTER_INNER_HOORAY"] = "env"
+            os.environ["RAFT_OUTER_INNER_HOORAY"] = "env"
             c = Config(user_prefix=join(CONFIGS_PATH, "yaml/"))
             c.load_shell_env()
             assert c.outer.inner.hooray == "env"
 
         def env_vars_override_systemwide(self):
-            os.environ["INVOKE_OUTER_INNER_HOORAY"] = "env"
+            os.environ["RAFT_OUTER_INNER_HOORAY"] = "env"
             c = Config(system_prefix=join(CONFIGS_PATH, "yaml/"))
             c.load_shell_env()
             assert c.outer.inner.hooray == "env"
 
         def env_vars_override_collection(self):
-            os.environ["INVOKE_OUTER_INNER_HOORAY"] = "env"
+            os.environ["RAFT_OUTER_INNER_HOORAY"] = "env"
             c = Config()
             c.load_collection({"outer": {"inner": {"hooray": "defaults"}}})
             c.load_shell_env()
             assert c.outer.inner.hooray == "env"
 
         def runtime_overrides_env_vars(self):
-            os.environ["INVOKE_OUTER_INNER_HOORAY"] = "env"
-            c = Config(runtime_path=join(CONFIGS_PATH, "json", "invoke.json"))
+            os.environ["RAFT_OUTER_INNER_HOORAY"] = "env"
+            c = Config(runtime_path=join(CONFIGS_PATH, "json", "raft.json"))
             c.load_runtime()
             c.load_shell_env()
             assert c.outer.inner.hooray == "json"
 
         def runtime_overrides_project(self):
             c = Config(
-                runtime_path=join(CONFIGS_PATH, "json", "invoke.json"),
+                runtime_path=join(CONFIGS_PATH, "json", "raft.json"),
                 project_location=join(CONFIGS_PATH, "yaml"),
             )
             c.load_runtime()
@@ -911,7 +911,7 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
 
         def runtime_overrides_user(self):
             c = Config(
-                runtime_path=join(CONFIGS_PATH, "json", "invoke.json"),
+                runtime_path=join(CONFIGS_PATH, "json", "raft.json"),
                 user_prefix=join(CONFIGS_PATH, "yaml/"),
             )
             c.load_runtime()
@@ -919,14 +919,14 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
 
         def runtime_overrides_systemwide(self):
             c = Config(
-                runtime_path=join(CONFIGS_PATH, "json", "invoke.json"),
+                runtime_path=join(CONFIGS_PATH, "json", "raft.json"),
                 system_prefix=join(CONFIGS_PATH, "yaml/"),
             )
             c.load_runtime()
             assert c.outer.inner.hooray == "json"
 
         def runtime_overrides_collection(self):
-            c = Config(runtime_path=join(CONFIGS_PATH, "json", "invoke.json"))
+            c = Config(runtime_path=join(CONFIGS_PATH, "json", "raft.json"))
             c.load_collection({"outer": {"inner": {"hooray": "defaults"}}})
             c.load_runtime()
             assert c.outer.inner.hooray == "json"
@@ -936,7 +936,7 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
             # TODO: expand into more explicit tests like the above? meh
             c = Config(
                 overrides={"outer": {"inner": {"hooray": "overrides"}}},
-                runtime_path=join(CONFIGS_PATH, "json", "invoke.json"),
+                runtime_path=join(CONFIGS_PATH, "json", "raft.json"),
             )
             c.load_runtime()
             assert c.outer.inner.hooray == "overrides"
@@ -1021,7 +1021,7 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
             # one time" (since assert_calls_with gets mad about other
             # invocations w/ different args)
             calls = load_yaml.call_args_list
-            my_call = call("{}invoke.yaml".format(path))
+            my_call = call("{}raft.yaml".format(path))
             try:
                 calls.remove(my_call)
                 assert my_call not in calls
@@ -1030,7 +1030,7 @@ Valid real attributes: ['clear', 'clone', 'env_prefix', 'file_prefix', 'from_dat
                 assert False, err.format(my_call, calls)
 
         def preserves_env_data(self):
-            os.environ["INVOKE_FOO"] = "bar"
+            os.environ["RAFT_FOO"] = "bar"
             c = Config(defaults={"foo": "notbar"})
             c.load_shell_env()
             c2 = c.clone()

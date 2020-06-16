@@ -8,14 +8,14 @@ except ImportError:
     termios = None
 from contextlib import contextmanager
 
-from invoke.vendor.six import BytesIO, b, wraps
+from raft.vendor.six import BytesIO, b, wraps
 
 from mock import patch, Mock
 from pytest import skip
 from pytest_relaxed import trap
 
-from invoke import Program, Runner
-from invoke.terminals import WINDOWS
+from raft import Program, Runner
+from raft.terminals import WINDOWS
 
 
 support = os.path.join(os.path.dirname(__file__), "_support")
@@ -67,7 +67,7 @@ def run(invocation, program=None, invoke=True):
     if program is None:
         program = Program()
     if invoke:
-        invocation = "invoke {}".format(invocation)
+        invocation = "raft {}".format(invocation)
     program.run(invocation, exit=False)
     return sys.stdout.getvalue(), sys.stderr.getvalue()
 
@@ -118,7 +118,7 @@ class MockSubprocess(object):
 
     def start(self):
         # Start patchin'
-        self.popen = patch("invoke.runners.Popen")
+        self.popen = patch("raft.runners.Popen")
         Popen = self.popen.start()
         self.read = patch("os.read")
         read = self.read.start()
@@ -283,6 +283,13 @@ class _Dummy(Runner):
 
     def read_proc_stderr(self, num_bytes):
         return ""
+
+    def run(self, command, **kwargs):
+        from io import StringIO
+        in_stream = kwargs.pop('in_stream', 'sesame')
+        if in_stream == 'sesame':
+            in_stream = StringIO('')
+        return super().run(command, in_stream=in_stream, **kwargs)
 
     def _write_proc_stdin(self, data):
         pass

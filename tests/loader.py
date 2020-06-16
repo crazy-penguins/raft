@@ -5,9 +5,9 @@ import types
 
 from pytest import raises
 
-from invoke import Config
-from invoke.loader import Loader, FilesystemLoader as FSLoader
-from invoke.exceptions import CollectionNotFound
+from raft import Config
+from raft.loader import Loader, FilesystemLoader as FSLoader
+from raft.exceptions import CollectionNotFound
 
 from _util import support
 

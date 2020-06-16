@@ -4,123 +4,123 @@ import six
 
 from mock import patch
 
-import invoke
-import invoke.collection
-import invoke.exceptions
-import invoke.tasks
-import invoke.program
+import raft
+import raft.collection
+import raft.exceptions
+import raft.tasks
+import raft.program
 
 
 class Init:
     "__init__"
 
     def dunder_version_info(self):
-        assert hasattr(invoke, "__version_info__")
-        ver = invoke.__version_info__
+        assert hasattr(raft, "__version_info__")
+        ver = raft.__version_info__
         assert isinstance(ver, tuple)
         assert all(isinstance(x, int) for x in ver)
 
     def dunder_version(self):
-        assert hasattr(invoke, "__version__")
-        ver = invoke.__version__
+        assert hasattr(raft, "__version__")
+        ver = raft.__version__
         assert isinstance(ver, six.string_types)
         assert re.match(r"\d+\.\d+\.\d+", ver)
 
     def dunder_version_looks_generated_from_dunder_version_info(self):
         # Meh.
-        ver_part = invoke.__version__.split(".")[0]
-        ver_info_part = invoke.__version_info__[0]
+        ver_part = raft.__version__.split(".")[0]
+        ver_info_part = raft.__version_info__[0]
         assert ver_part == str(ver_info_part)
 
     class exposes_bindings:
         def task_decorator(self):
-            assert invoke.task is invoke.tasks.task
+            assert raft.task is raft.tasks.task
 
         def task_class(self):
-            assert invoke.Task is invoke.tasks.Task
+            assert raft.Task is raft.tasks.Task
 
         def collection_class(self):
-            assert invoke.Collection is invoke.collection.Collection
+            assert raft.Collection is raft.collection.Collection
 
         def context_class(self):
-            assert invoke.Context is invoke.context.Context
+            assert raft.Context is raft.context.Context
 
         def mock_context_class(self):
-            assert invoke.MockContext is invoke.context.MockContext
+            assert raft.MockContext is raft.context.MockContext
 
         def config_class(self):
-            assert invoke.Config is invoke.config.Config
+            assert raft.Config is raft.config.Config
 
         def pty_size_function(self):
-            assert invoke.pty_size is invoke.terminals.pty_size
+            assert raft.pty_size is raft.terminals.pty_size
 
         def local_class(self):
-            assert invoke.Local is invoke.runners.Local
+            assert raft.Local is raft.runners.Local
 
         def runner_class(self):
-            assert invoke.Runner is invoke.runners.Runner
+            assert raft.Runner is raft.runners.Runner
 
         def promise_class(self):
-            assert invoke.Promise is invoke.runners.Promise
+            assert raft.Promise is raft.runners.Promise
 
         def failure_class(self):
-            assert invoke.Failure is invoke.runners.Failure
+            assert raft.Failure is raft.runners.Failure
 
         def exceptions(self):
             # Meh
-            for obj in vars(invoke.exceptions).values():
+            for obj in vars(raft.exceptions).values():
                 if isinstance(obj, type) and issubclass(obj, BaseException):
-                    top_level = getattr(invoke, obj.__name__)
-                    real = getattr(invoke.exceptions, obj.__name__)
+                    top_level = getattr(raft, obj.__name__)
+                    real = getattr(raft.exceptions, obj.__name__)
                     assert top_level is real
 
         def runner_result(self):
-            assert invoke.Result is invoke.runners.Result
+            assert raft.Result is raft.runners.Result
 
         def watchers(self):
-            assert invoke.StreamWatcher is invoke.watchers.StreamWatcher
-            assert invoke.Responder is invoke.watchers.Responder
-            assert invoke.FailingResponder is invoke.watchers.FailingResponder
+            assert raft.StreamWatcher is raft.watchers.StreamWatcher
+            assert raft.Responder is raft.watchers.Responder
+            assert raft.FailingResponder is raft.watchers.FailingResponder
 
         def program(self):
-            assert invoke.Program is invoke.program.Program
+            assert raft.Program is raft.program.Program
 
         def filesystemloader(self):
-            assert invoke.FilesystemLoader is invoke.loader.FilesystemLoader
+            assert raft.FilesystemLoader is raft.loader.FilesystemLoader
 
         def argument(self):
-            assert invoke.Argument is invoke.parser.Argument
+            assert raft.Argument is raft.parser.Argument
 
         def parsercontext(self):
-            assert invoke.ParserContext is invoke.parser.ParserContext
+            assert raft.ParserContext is raft.parser.ParserContext
 
         def parser(self):
-            assert invoke.Parser is invoke.parser.Parser
+            assert raft.Parser is raft.parser.Parser
 
         def parseresult(self):
-            assert invoke.ParseResult is invoke.parser.ParseResult
+            assert raft.ParseResult is raft.parser.ParseResult
 
         def executor(self):
-            assert invoke.Executor is invoke.executor.Executor
+            assert raft.Executor is raft.executor.Executor
 
         def call(self):
-            assert invoke.call is invoke.tasks.call
+            assert raft.call is raft.tasks.call
 
         def Call(self):
             # Starting to think we shouldn't bother with lowercase-c call...
-            assert invoke.Call is invoke.tasks.Call
+            assert raft.Call is raft.tasks.Call
 
     class offers_singletons:
-        @patch("invoke.Context")
+        @patch("raft.Context")
         def run(self, Context):
-            result = invoke.run("foo", bar="biz")
+            result = raft.run("foo", bar="biz")
             ctx = Context.return_value
             ctx.run.assert_called_once_with("foo", bar="biz")
             assert result is ctx.run.return_value
 
-        @patch("invoke.Context")
+        @patch("raft.Context")
         def sudo(self, Context):
-            result = invoke.sudo("foo", bar="biz")
+            result = raft.sudo("foo", bar="biz")
             ctx = Context.return_value
             ctx.sudo.assert_called_once_with("foo", bar="biz")
             assert result is ctx.sudo.return_value

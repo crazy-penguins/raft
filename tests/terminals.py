@@ -4,7 +4,7 @@ import termios
 from mock import Mock, patch
 from pytest import skip, mark
 
-from invoke.terminals import pty_size, bytes_to_read, WINDOWS
+from raft.terminals import pty_size, bytes_to_read, WINDOWS
 
 # Skip on Windows CI, it may blow up on one of these tests
 pytestmark = mark.skipif(
