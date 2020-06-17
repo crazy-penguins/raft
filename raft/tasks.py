@@ -8,7 +8,7 @@ import inspect
 import types
 
 from .context import Context
-from .parser import Argument, translate_underscores
+from .parser import Argument
 from .util import six
 
 if six.PY3:
