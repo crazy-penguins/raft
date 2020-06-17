@@ -28,7 +28,7 @@ clean:
 	source bin/activate \
 	  && python -B -O setup.py clean
 	rm -rf build dist
-	rm -r raft.egg-info
+	rm -rf raft.egg-info
 
 upload:
 	source bin/activate \
