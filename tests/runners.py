@@ -9,13 +9,13 @@ import types
 from io import BytesIO
 from itertools import chain, repeat
 
-from invoke.vendor.six import StringIO, b, PY2, iteritems
+from raft.vendor.six import StringIO, b, PY2, iteritems
 
 from pytest import raises, skip
 from pytest_relaxed import trap
 from mock import patch, Mock, call
 
-from invoke import (
+from raft import (
     CommandTimedOut,
     Config,
     Context,
@@ -31,8 +31,8 @@ from invoke import (
     UnexpectedExit,
     WatcherError,
 )
-from invoke.runners import default_encoding
-from invoke.terminals import WINDOWS
+from raft.runners import default_encoding
+from raft.terminals import WINDOWS
 
 from _util import (
     mock_subprocess,
@@ -395,7 +395,7 @@ class Runner_:
             # Actually testing this highly OS/env specific stuff is very
             # error-prone; so we degrade to just testing expected function
             # calls for now :(
-            with patch("invoke.runners.locale") as fake_locale:
+            with patch("raft.runners.locale") as fake_locale:
                 fake_locale.getdefaultlocale.return_value = ("meh", "UHF-8")
                 fake_locale.getpreferredencoding.return_value = "FALLBACK"
                 expected = "UHF-8" if (PY2 and not WINDOWS) else "FALLBACK"
@@ -404,7 +404,7 @@ class Runner_:
         def falls_back_to_defaultlocale_when_preferredencoding_is_None(self):
             if PY2:
                 skip()
-            with patch("invoke.runners.locale") as fake_locale:
+            with patch("raft.runners.locale") as fake_locale:
                 fake_locale.getdefaultlocale.return_value = (None, None)
                 fake_locale.getpreferredencoding.return_value = "FALLBACK"
                 assert self._runner().default_encoding() == "FALLBACK"
@@ -537,7 +537,7 @@ class Runner_:
     class input_stream_handling:
         # NOTE: actual autoresponder tests are elsewhere. These just test that
         # stdin works normally & can be overridden.
-        @patch("invoke.runners.sys.stdin", StringIO("Text!"))
+        @patch("raft.runners.sys.stdin", StringIO("Text!"))
         def defaults_to_sys_stdin(self):
             # Execute w/ runner class that has a mocked stdin_writer
             klass = self._mock_stdin_writer()
@@ -570,7 +570,7 @@ class Runner_:
             )
             assert not MockedHandleStdin.handle_stdin.called
 
-        @patch("invoke.util.debug")
+        @patch("raft.util.debug")
         def exceptions_get_logged(self, mock_debug):
             # Make write_proc_stdin asplode
             klass = self._mock_stdin_writer()
@@ -1069,7 +1069,7 @@ stderr 25
             class MyRunner(_Dummy):
                 input_sleep = 0.007
 
-            with patch("invoke.runners.time") as mock_time:
+            with patch("raft.runners.time") as mock_time:
                 MyRunner(Context()).run(
                     _,
                     in_stream=StringIO("foo"),
@@ -1159,12 +1159,12 @@ stderr 25
 
         @trap
         @skip_if_windows
-        @patch("invoke.runners.sys.stdin")
-        @patch("invoke.terminals.fcntl.ioctl")
-        @patch("invoke.terminals.os")
-        @patch("invoke.terminals.termios")
-        @patch("invoke.terminals.tty")
-        @patch("invoke.terminals.select")
+        @patch("raft.runners.sys.stdin")
+        @patch("raft.terminals.fcntl.ioctl")
+        @patch("raft.terminals.os")
+        @patch("raft.terminals.termios")
+        @patch("raft.terminals.tty")
+        @patch("raft.terminals.select")
         # NOTE: the no-fileno edition is handled at top of this local test
         # class, in the base case test.
         def reads_FIONREAD_bytes_from_stdin_when_fileno(
@@ -1207,21 +1207,21 @@ stderr 25
 
     class character_buffered_stdin:
         @skip_if_windows
-        @patch("invoke.terminals.tty")
+        @patch("raft.terminals.tty")
         def setcbreak_called_on_tty_stdins(self, mock_tty, mock_termios):
             mock_termios.tcgetattr.return_value = make_tcattrs(echo=True)
             self._run(_)
             mock_tty.setcbreak.assert_called_with(sys.stdin)
 
         @skip_if_windows
-        @patch("invoke.terminals.tty")
+        @patch("raft.terminals.tty")
         def setcbreak_not_called_on_non_tty_stdins(self, mock_tty):
             self._run(_, in_stream=StringIO())
             assert not mock_tty.setcbreak.called
 
         @skip_if_windows
-        @patch("invoke.terminals.tty")
-        @patch("invoke.terminals.os")
+        @patch("raft.terminals.tty")
+        @patch("raft.terminals.os")
         def setcbreak_not_called_if_process_not_foregrounded(
             self, mock_os, mock_tty
         ):
@@ -1234,7 +1234,7 @@ stderr 25
             mock_os.tcgetpgrp.assert_called_once_with(sys.stdin.fileno())
 
         @skip_if_windows
-        @patch("invoke.terminals.tty")
+        @patch("raft.terminals.tty")
         def tty_stdins_have_settings_restored_by_default(
             self, mock_tty, mock_termios
         ):
@@ -1249,7 +1249,7 @@ stderr 25
             )
 
         @skip_if_windows
-        @patch("invoke.terminals.tty")  # stub
+        @patch("raft.terminals.tty")  # stub
         def tty_stdins_have_settings_restored_on_KeyboardInterrupt(
             self, mock_tty, mock_termios
         ):
@@ -1267,7 +1267,7 @@ stderr 25
             )
 
         @skip_if_windows
-        @patch("invoke.terminals.tty")
+        @patch("raft.terminals.tty")
         def setcbreak_not_called_if_terminal_seems_already_cbroken(
             self, mock_tty, mock_termios
         ):
@@ -1357,7 +1357,7 @@ Stderr: already printed
 """.lstrip()
             assert str(info.value) == expected
 
-        @patch("invoke.runners.threading.Timer")
+        @patch("raft.runners.threading.Timer")
         def start_timer_gives_its_timer_the_kill_method(self, Timer):
             runner = self._runner()
             runner.start_timer(30)
@@ -1556,7 +1556,7 @@ class Local_:
             # is emitted. This is kinda implementation-specific, but...
             skip()
 
-        @patch("invoke.runners.sys")
+        @patch("raft.runners.sys")
         def replaced_stdin_objects_dont_explode(self, mock_sys):
             # Replace sys.stdin with an object lacking .isatty(), which
             # normally causes an AttributeError unless we are being careful.
@@ -1671,7 +1671,7 @@ class Local_:
             runner.process.stdin.close.assert_called_once_with()
 
     class timeout:
-        @patch("invoke.runners.os")
+        @patch("raft.runners.os")
         def kill_uses_self_pid_when_pty(self, mock_os):
             runner = self._runner()
             runner.using_pty = True
@@ -1679,7 +1679,7 @@ class Local_:
             runner.kill()
             mock_os.kill.assert_called_once_with(50, signal.SIGKILL)
 
-        @patch("invoke.runners.os")
+        @patch("raft.runners.os")
         def kill_uses_self_process_pid_when_not_pty(self, mock_os):
             runner = self._runner()
             runner.using_pty = False
@@ -1758,7 +1758,7 @@ class Result_:
             tail = Result(stderr=self.sample).tail("stderr", count=2)
             assert tail == expected
 
-        @patch("invoke.runners.encode_output")
+        @patch("raft.runners.encode_output")
         def encodes_with_result_encoding(self, encode):
             Result(stdout="foo", encoding="utf-16").tail("stdout")
             encode.assert_called_once_with("\n\nfoo", "utf-16")

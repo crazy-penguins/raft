@@ -1,6 +1,6 @@
 from pytest import skip, raises
 
-from invoke.parser import Argument
+from raft.parser import Argument
 
 
 class Argument_:

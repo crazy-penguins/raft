@@ -2,7 +2,7 @@
 Tasks module for use within the integration tests.
 """
 
-from invoke import task
+from raft import task
 
 
 @task

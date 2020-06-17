@@ -12,7 +12,7 @@ html_theme = "alabaster"
 html_theme_options = {
     "description": "Pythonic task execution",
     "github_user": "pyinvoke",
-    "github_repo": "invoke",
+    "github_repo": "raft",
     "analytics_id": "UA-18486793-3",
     "travis_button": True,
     "codecov_button": True,

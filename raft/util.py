@@ -12,9 +12,9 @@ import sys
 # thus must import our 'vendored' stuff from the overall environment.)
 # All other uses of six, Lexicon, etc should do 'from .util import six' etc.
 # Saves us from having to update the same logic in a dozen places.
-# TODO: would this make more sense to put _into_ invoke.vendor? That way, the
+# TODO: would this make more sense to put _into_ raft.vendor? That way, the
 # import lines which now read 'from .util import <third party stuff>' would be
-# more obvious. Requires packagers to leave invoke/vendor/__init__.py alone tho
+# more obvious. Requires packagers to leave raft/vendor/__init__.py alone tho
 # NOTE: we also grab six.moves internals directly so other modules don't have
 # to worry about it (they can't rely on the imported 'six' directly via
 # attribute access, since six.moves does import shenanigans.)
@@ -43,11 +43,11 @@ def enable_logging():
 
 # Allow from-the-start debugging (vs toggled during load of tasks module) via
 # shell env var.
-if os.environ.get("INVOKE_DEBUG"):
+if os.environ.get("RAFT_DEBUG"):
     enable_logging()
 
 # Add top level logger functions to global namespace. Meh.
-log = logging.getLogger("invoke")
+log = logging.getLogger("raft")
 for x in ("debug",):
     globals()[x] = getattr(log, x)
 

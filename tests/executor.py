@@ -1,8 +1,8 @@
 from mock import Mock
 import pytest
 
-from invoke import Collection, Config, Context, Executor, Task, call, task
-from invoke.parser import ParserContext, ParseResult
+from raft import Collection, Config, Context, Executor, Task, call, task
+from raft.parser import ParserContext, ParseResult
 
 from _util import expect
 

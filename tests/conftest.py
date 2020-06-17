@@ -3,7 +3,7 @@ import os
 import sys
 import termios
 
-from invoke.vendor.six import iteritems
+from raft.vendor.six import iteritems
 import pytest
 from mock import patch
 
@@ -64,7 +64,7 @@ def integration(reset_environ, chdir_support, clean_sys_modules):
 
 @pytest.fixture
 def mock_termios():
-    with patch("invoke.terminals.termios") as mocked:
+    with patch("raft.terminals.termios") as mocked:
         # Ensure mocked termios has 'real' values for constants...otherwise
         # doing bit arithmetic on Mocks kinda defeats the point.
         mocked.ECHO = termios.ECHO

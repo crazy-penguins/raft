@@ -1,6 +1,6 @@
-from invoke.vendor.six.moves.queue import Queue
+from raft.vendor.six.moves.queue import Queue
 
-from invoke.util import ExceptionWrapper, ExceptionHandlingThread as EHThread
+from raft.util import ExceptionWrapper, ExceptionHandlingThread as EHThread
 
 
 # TODO: rename

@@ -1,6 +1,6 @@
 from pytest import raises
 
-from invoke.config import merge_dicts, copy_dict, AmbiguousMergeError
+from raft.config import merge_dicts, copy_dict, AmbiguousMergeError
 
 
 class merge_dicts_:

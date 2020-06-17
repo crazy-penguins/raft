@@ -1,7 +1,7 @@
 import os
 import sys
 
-from invoke import Program
+from raft import Program
 
 import pytest
 
@@ -63,9 +63,9 @@ class CompletionScriptPrinter:
             invoke=False,
         )
         # Combines some sentinels from vanilla test, with checks that it's
-        # really replacing 'invoke' with desired binary names
+        # really replacing 'raft' with desired binary names
         assert "_complete_mya() {" in out
-        assert "invoke" not in out
+        assert "raft" not in out
         assert " mya myapp" in out
 
     def default_binary_names_is_completing_argv_0(self):

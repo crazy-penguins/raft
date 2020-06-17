@@ -2,12 +2,12 @@ from __future__ import print_function
 
 import operator
 
-from invoke.util import reduce
+from raft.util import reduce
 
 from pytest import raises
 
-from invoke.collection import Collection
-from invoke.tasks import task, Task
+from raft.collection import Collection
+from raft.tasks import task, Task
 
 from _util import load, support_path
 

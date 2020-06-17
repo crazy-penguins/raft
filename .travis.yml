@@ -61,16 +61,16 @@ script:
   # around inability to overwrite/remote __pycache__ dirs...this attempts to
   # workaround
   - "find . -type d -name __pycache__ | sudo xargs rm -rf"
-  - inv travis.test-installation --package=invoke --sanity="inv --list"
+  - inv travis.test-installation --package=raft --sanity="inv --list"
   # Test distribution builds, including some package_data based stuff
   # (completion script printing)
-  - "inv travis.test-packaging --package=invoke --sanity='inv --list && inv --print-completion-script zsh' --alt-python=alt_env/bin/python"
+  - "inv travis.test-packaging --package=raft --sanity='inv --list && inv --print-completion-script zsh' --alt-python=alt_env/bin/python"
 after_success:
   # Upload coverage data to codecov
   - codecov
 notifications:
   irc:
-    channels: "irc.freenode.org#invoke"
+    channels: "irc.freenode.org#raft"
     template:
       - "%{repository_name}@%{branch}: %{message} (%{build_url})"
     on_success: change

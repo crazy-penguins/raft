@@ -2,9 +2,9 @@ import copy
 
 from pytest import raises
 
-from invoke.parser import Argument, Context
-from invoke.tasks import task
-from invoke.collection import Collection
+from raft.parser import Argument, Context
+from raft.tasks import task
+from raft.collection import Collection
 
 
 class Context_:

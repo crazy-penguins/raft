@@ -8,7 +8,7 @@ from shared_conf import *
 
 # Releases changelog extension
 extensions.append("releases")
-releases_github_path = "pyinvoke/invoke"
+releases_github_path = "pyinvoke/raft"
 
 # Default is 'local' building, but reference the public docs site when building
 # under RTD.

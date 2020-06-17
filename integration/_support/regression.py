@@ -4,7 +4,7 @@ Barebones regression-catching script that looks for ephemeral run() failures.
 Intended to be run from top level of project via ``inv regression``. In an
 ideal world this would be truly part of the integration test suite, but:
 
-- something about the outer invoke or pytest environment seems to prevent such
+- something about the outer raft or pytest environment seems to prevent such
   issues from appearing reliably (see eg issue #660)
 - it can take quite a while to run, even compared to other integration tests.
 """
@@ -12,7 +12,7 @@ ideal world this would be truly part of the integration test suite, but:
 
 import sys
 
-from invoke import task
+from raft import task
 
 
 @task

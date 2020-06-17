@@ -7,7 +7,7 @@ from mock import patch, Mock, call
 from pytest_relaxed import trap
 from pytest import skip, raises
 
-from invoke import (
+from raft import (
     AuthFailure,
     Context,
     Config,
@@ -21,7 +21,7 @@ from invoke import (
 from _util import mock_subprocess, _Dummy
 
 
-local_path = "invoke.config.Local"
+local_path = "raft.config.Local"
 
 
 class Context_:
@@ -485,7 +485,7 @@ class Context_:
 
         @mock_subprocess(out="something", exit=None)
         def raises_auth_failure_when_failure_detected(self):
-            with patch("invoke.context.FailingResponder") as klass:
+            with patch("raft.context.FailingResponder") as klass:
                 unacceptable = Mock(side_effect=ResponseNotAccepted)
                 klass.return_value.submit = unacceptable
                 excepted = False

@@ -72,7 +72,7 @@ class Parser(object):
 
         Bad::
 
-            Parser(...).parse_argv(['invoke', '--core-opt', ...])
+            Parser(...).parse_argv(['raft', '--core-opt', ...])
 
         :param argv: List of argument string tokens.
         :returns:

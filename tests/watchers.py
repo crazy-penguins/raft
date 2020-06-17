@@ -1,8 +1,8 @@
 from threading import Thread, Event
 
-from invoke.vendor.six.moves.queue import Queue, Empty
+from raft.vendor.six.moves.queue import Queue, Empty
 
-from invoke import Responder, FailingResponder, ResponseNotAccepted
+from raft import Responder, FailingResponder, ResponseNotAccepted
 
 
 # NOTE: StreamWatcher is basically just an interface/protocol; no behavior to

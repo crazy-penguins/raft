@@ -1,4 +1,4 @@
-from invoke import Collection, task, call
+from raft import Collection, task, call
 
 from package import module
 

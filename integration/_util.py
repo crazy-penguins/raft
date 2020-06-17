@@ -3,7 +3,7 @@ from resource import getrusage, RUSAGE_SELF
 import sys
 import time
 
-from invoke.vendor.six import wraps
+from raft.vendor.six import wraps
 
 from pytest import skip
 
