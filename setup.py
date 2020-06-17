@@ -42,10 +42,7 @@ setup(
     entry_points={
         "console_scripts": [
             "raft = raft.main:program.run",
-            "fab = raft.main:program.run",
-            "invoke = raft.main:program.run",
             "convoke = raft.main:program.run",
-            "inv = raft.main:program.run",
         ]
     },
     classifiers=[

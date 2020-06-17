@@ -527,7 +527,7 @@ this is also not ascii: \xe4\x8c\xa1
                 # * fill terminal w/ columns + spacing
                 # * line-wrap help text in its own column
                 expected = """
-Usage: inv[oke] [--core-opts] task1 [--task1-opts] ... taskN [--taskN-opts]
+Usage: raft [--core-opts] task1 [--task1-opts] ... taskN [--taskN-opts]
 
 Core options:
 
