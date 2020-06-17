@@ -1603,8 +1603,4 @@ def default_encoding():
     # Linux and OS X, and `locale.getpreferredencoding(do_setlocale=True)`
     # triggers some global state changes. (See #274 for discussion.)
     encoding = locale.getpreferredencoding(False)
-    if six.PY2 and not WINDOWS:
-        default = locale.getdefaultlocale()[1]
-        if default is not None:
-            encoding = default
     return encoding

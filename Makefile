@@ -13,5 +13,8 @@ test:
 	source .py37/bin/activate \
 	  && python -B -O -m pytest --maxfail=1 \
 	      --capture=no \
+	      --cov --cov-report term-missing \
 		  tests/
-# --cov raft --cov-report term-missing \
+
+lint:
+	flake8 raft tests raft_examples

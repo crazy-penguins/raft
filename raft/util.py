@@ -22,11 +22,7 @@ try:
     from .vendor.lexicon import Lexicon  # noqa
     from .vendor import six
     from .vendor.six.moves import reduce  # noqa
-
-    if six.PY3:
-        from .vendor import yaml3 as yaml  # noqa
-    else:
-        from .vendor import yaml2 as yaml  # noqa
+    from .vendor import yaml3 as yaml  # noqa
 except ImportError:
     from lexicon import Lexicon  # noqa
     import six
@@ -152,11 +148,6 @@ def encode_output(string, encoding):
     # UTF-8, ascii is still actually used, and explodes.
     # Python 3 doesn't have this problem, so we delegate encoding to the
     # io.*Writer classes involved.
-    if six.PY2:
-        # TODO: split up encoding settings (currently, the one we are given -
-        # often a Runner.encoding value - is used for both input and output),
-        # only use the one for 'local encoding' here.
-        string = string.encode(encoding)
     return string
 
 
