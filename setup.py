@@ -14,7 +14,7 @@ version = _locals["__version__"]
 # PyYAML ships a split Python 2/3 codebase. Unfortunately, some pip versions
 # attempt to interpret both halves of PyYAML, yielding SyntaxErrors. Thus, we
 # exclude whichever appears inappropriate for the installing interpreter.
-exclude = ["*.yaml3" if sys.version_info[0] == 2 else "*.yaml2"]
+exclude = ["*.yaml2", 'tests']
 
 # Frankenstein long_description: version-specific changelog note + README
 text = open("README.rst").read()
@@ -44,6 +44,7 @@ setup(
             "raft = raft.main:program.run",
             "fab = raft.main:program.run",
             "invoke = raft.main:program.run",
+            "convoke = raft.main:program.run",
             "inv = raft.main:program.run",
         ]
     },

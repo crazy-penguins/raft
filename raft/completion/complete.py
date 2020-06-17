@@ -98,6 +98,10 @@ def print_task_names(collection):
 def print_completion_script(shell, names):
     # Grab all .completion files in raft/completion/. (These used to have no
     # suffix, but surprise, that's super fragile.
+    # path = os.path.join(
+    #     os.path.dirname(os.path.realpath(__file__)), "*.completion"
+    # )
+    # print(f'path: {path}')
     completions = {
         os.path.splitext(os.path.basename(x))[0]: x
         for x in glob.glob(

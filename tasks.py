@@ -3,10 +3,10 @@ import os
 from raft import Collection, task
 from raft.util import LOG_FORMAT
 
-from raft_examples import travis, checks
-from raft_examples.docs import docs, www, sites, watch_docs
-from raft_examples.pytest import coverage as coverage_, test as test_
-from raft_examples.packaging import vendorize, release
+from convocations import travis, checks
+from convocations.docs import docs, www, sites, watch_docs
+from convocations.pytest import coverage as coverage_, test as test_
+from convocations.packaging import vendorize, release
 
 
 @task
