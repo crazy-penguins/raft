@@ -1,6 +1,6 @@
 from pytest import raises
 
-from invoke.parser import Parser, Context, Argument, ParseError
+from raft.parser import Parser, Context, Argument, ParseError
 
 
 class Parser_:
@@ -107,7 +107,7 @@ class Parser_:
         def inverse_bools_get_set_correctly(self):
             arg = Argument("myarg", kind=bool, default=True)
             c = Context("mytask", args=(arg,))
-            r = Parser((c,)).parse_argv(["mytask", "--no-myarg"])
+            r = Parser((c,)).parse_argv(["mytask", "--no_myarg"])
             assert r[0].args["myarg"].value is False
 
         def arguments_which_take_values_get_defaults_overridden_correctly(

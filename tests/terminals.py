@@ -4,7 +4,7 @@ import termios
 from mock import Mock, patch
 from pytest import skip, mark
 
-from invoke.terminals import pty_size, bytes_to_read, WINDOWS
+from raft.terminals import pty_size, bytes_to_read, WINDOWS
 
 # Skip on Windows CI, it may blow up on one of these tests
 pytestmark = mark.skipif(
@@ -51,14 +51,14 @@ class terminals:
             assert pty_size() == (80, 24)
 
     class bytes_to_read_:
-        @patch("invoke.terminals.fcntl")
+        @patch("raft.terminals.fcntl")
         def returns_1_when_stream_lacks_fileno(self, fcntl):
             # A fileno() that exists but returns a non-int is a quick way
             # to fail util.has_fileno().
             assert bytes_to_read(Mock(fileno=lambda: None)) == 1
             assert not fcntl.ioctl.called
 
-        @patch("invoke.terminals.fcntl")
+        @patch("raft.terminals.fcntl")
         def returns_1_when_stream_has_fileno_but_is_not_a_tty(self, fcntl):
             # It blows up otherwise anyways (struct.unpack gets mad because
             # result isn't a string of the right length) but let's make

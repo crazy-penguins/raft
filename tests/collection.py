@@ -2,12 +2,12 @@ from __future__ import print_function
 
 import operator
 
-from invoke.util import reduce
+from raft.util import reduce
 
 from pytest import raises
 
-from invoke.collection import Collection
-from invoke.tasks import task, Task
+from raft.collection import Collection
+from raft.tasks import task, Task
 
 from _util import load, support_path
 
@@ -161,8 +161,8 @@ class Collection_:
 
             def name_override(self):
                 assert self.from_module(self.mod).name == "integration"
-                override = self.from_module(self.mod, name="not-integration")
-                assert override.name == "not-integration"
+                override = self.from_module(self.mod, name="not_integration")
+                assert override.name == "not_integration"
 
             def inline_configuration(self):
                 # No configuration given, none gotten
@@ -212,14 +212,14 @@ class Collection_:
 
         def honors_explicit_collections(self):
             coll = Collection.from_module(load("explicit_root"))
-            assert "top-level" in coll.tasks
-            assert "sub-level" in coll.collections
+            assert "top_level" in coll.tasks
+            assert "sub_level" in coll.collections
             # The real key test
-            assert "sub-task" not in coll.tasks
+            assert "sub_task" not in coll.tasks
 
         def allows_tasks_with_explicit_names_to_override_bound_name(self):
             coll = Collection.from_module(load("subcollection_task_name"))
-            assert "explicit-name" in coll.tasks  # not 'implicit_name'
+            assert "explicit_name" in coll.tasks  # not 'implicit_name'
 
         def returns_unique_Collection_objects_for_same_input_module(self):
             # Ignoring self.c for now, just in case it changes later.
@@ -267,13 +267,13 @@ class Collection_:
                 assert subconfig["mykey"] == "myvalue"
 
             def inline_name_overrides_root_namespace_object_name(self):
-                assert self.unchanged.name == "builtin-name"
-                assert self.changed.name == "override-name"
+                assert self.unchanged.name == "builtin_name"
+                assert self.changed.name == "override_name"
 
             def root_namespace_object_name_overrides_module_name(self):
                 # Duplicates part of previous test for explicitness' sake.
                 # I.e. proves that the name doesn't end up 'explicit_root'.
-                assert self.unchanged.name == "builtin-name"
+                assert self.unchanged.name == "builtin_name"
 
             def docstring_still_copied_from_module(self):
                 expected = "EXPLICIT LYRICS"
@@ -457,7 +457,7 @@ class Collection_:
                     pass
 
                 contexts = Collection(my_task).to_contexts()
-                assert contexts[0].name == "my-task"
+                assert contexts[0].name == "my_task"
 
             def percolates_to_subcollection_tasks(self):
                 @task
@@ -470,7 +470,7 @@ class Collection_:
 
                 coll = Collection(outer_task, inner=Collection(inner_task))
                 contexts = coll.to_contexts()
-                expected = {"outer-task", "inner.inner-task"}
+                expected = {"outer_task", "inner.inner_task"}
                 assert {x.name for x in contexts} == expected
 
             def percolates_to_subcollection_names(self):
@@ -480,7 +480,7 @@ class Collection_:
 
                 coll = Collection(inner_coll=Collection(my_task))
                 contexts = coll.to_contexts()
-                assert contexts[0].name == "inner-coll.my-task"
+                assert contexts[0].name == "inner_coll.my_task"
 
             def aliases_are_dashed_too(self):
                 @task(aliases=["hi_im_underscored"])
@@ -488,7 +488,7 @@ class Collection_:
                     pass
 
                 contexts = Collection(whatever).to_contexts()
-                assert "hi-im-underscored" in contexts[0].aliases
+                assert "hi_im_underscored" in contexts[0].aliases
 
             def leading_and_trailing_underscores_are_not_affected(self):
                 @task
@@ -501,7 +501,7 @@ class Collection_:
 
                 inner = Collection("inner", _inner_cooler_)
                 contexts = Collection(_what_evers_, inner).to_contexts()
-                expected = {"_what-evers_", "inner._inner-cooler_"}
+                expected = {"_what_evers_", "inner._inner_cooler_"}
                 assert {x.name for x in contexts} == expected
 
             def _nested_underscores(self, auto_dash_names=None):
@@ -514,7 +514,7 @@ class Collection_:
                     pass
 
                 # NOTE: explicitly not giving kwarg to subcollection; this
-                # tests that the top-level namespace performs the inverse
+                # tests that the top_level namespace performs the inverse
                 # transformation when necessary.
                 sub = Collection("inner_coll", inner_task)
                 return Collection(
@@ -581,13 +581,13 @@ class Collection_:
 
         def returns_all_task_names_including_subtasks(self):
             names = set(self.c.task_names.keys())
-            assert names == {"top-level", "sub-level.sub-task"}
+            assert names == {"top_level", "sub_level.sub_task"}
 
         def includes_aliases_and_defaults_as_values(self):
             names = self.c.task_names
-            assert names["top-level"] == ["other-top"]
-            subtask_names = names["sub-level.sub-task"]
-            assert subtask_names == ["sub-level.other-sub", "sub-level"]
+            assert names["top_level"] == ["other_top"]
+            subtask_names = names["sub_level.sub_task"]
+            assert subtask_names == ["sub_level.other_sub", "sub_level"]
 
     class configuration:
         "Configuration methods"
@@ -739,7 +739,7 @@ class Collection_:
                     dict(
                         name="db",
                         help="Deploy to our database servers.",
-                        aliases=["db-servers"],
+                        aliases=["db_servers"],
                     ),
                     dict(
                         name="everywhere",
@@ -808,7 +808,7 @@ class Collection_:
                         aliases=["everything"],
                     ),
                     dict(
-                        name="c-ext",
+                        name="c_ext",
                         help="Build our internal C extension.",
                         aliases=["ext"],
                     ),

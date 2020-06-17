@@ -1,12 +1,12 @@
 import os
 
-from invoke import Collection, task
-from invoke.util import LOG_FORMAT
+from raft import Collection, task
+from raft.util import LOG_FORMAT
 
-from invocations import travis, checks
-from invocations.docs import docs, www, sites, watch_docs
-from invocations.pytest import coverage as coverage_, test as test_
-from invocations.packaging import vendorize, release
+from convocations import travis, checks
+from convocations.docs import docs, www, sites, watch_docs
+from convocations.pytest import coverage as coverage_, test as test_
+from convocations.packaging import vendorize, release
 
 
 @task
@@ -105,9 +105,9 @@ ns.configure(
             # blackening.
             # TODO: this is making it seem like I really do want an explicit
             # arg/conf-opt in the blacken task for "excluded paths"...ha
-            "find_opts": "-and -not \( -path './invoke/vendor*' -or -path './alt_env*' -or -path './build*' \)"  # noqa
+            "find_opts": "-and -not \( -path './raft/vendor*' -or -path './alt_env*' -or -path './build*' \)"  # noqa
         },
-        "tests": {"logformat": LOG_FORMAT, "package": "invoke"},
+        "tests": {"logformat": LOG_FORMAT, "package": "raft"},
         "travis": {
             "sudo": {"user": "sudouser", "password": "mypass"},
             "black": {"version": "18.6b4"},

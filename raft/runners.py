@@ -320,7 +320,7 @@ class Runner(object):
                   as ptys natively echo stdin to stdout on their own;
                 * And when the controlling terminal of Invoke itself (as per
                   ``in_stream``) appears to be a valid terminal device or TTY.
-                  (Specifically, when `~invoke.util.isatty` yields a ``True``
+                  (Specifically, when `~raft.util.isatty` yields a ``True``
                   result when given ``in_stream``.)
 
                   .. note::
@@ -1603,8 +1603,4 @@ def default_encoding():
     # Linux and OS X, and `locale.getpreferredencoding(do_setlocale=True)`
     # triggers some global state changes. (See #274 for discussion.)
     encoding = locale.getpreferredencoding(False)
-    if six.PY2 and not WINDOWS:
-        default = locale.getdefaultlocale()[1]
-        if default is not None:
-            encoding = default
     return encoding

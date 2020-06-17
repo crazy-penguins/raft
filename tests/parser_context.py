@@ -2,9 +2,9 @@ import copy
 
 from pytest import raises
 
-from invoke.parser import Argument, Context
-from invoke.tasks import task
-from invoke.collection import Collection
+from raft.parser import Argument, Context
+from raft.tasks import task
+from raft.collection import Collection
 
 
 class Context_:
@@ -91,8 +91,8 @@ class Context_:
         def adds_true_bools_to_inverse_flags(self):
             self.c.add_arg(name="myflag", default=True, kind=bool)
             assert "--myflag" in self.c.flags
-            assert "--no-myflag" in self.c.inverse_flags
-            assert self.c.inverse_flags["--no-myflag"] == "--myflag"
+            assert "--no_myflag" in self.c.inverse_flags
+            assert self.c.inverse_flags["--no_myflag"] == "--myflag"
 
         def inverse_flags_works_right_with_task_driven_underscored_names(self):
             # Use a Task here instead of creating a raw argument, we're partly
@@ -104,8 +104,8 @@ class Context_:
                 pass
 
             self.c.add_arg(mytask.get_arguments()[0])
-            flags = self.c.inverse_flags["--no-underscored-option"]
-            assert flags == "--underscored-option"
+            flags = self.c.inverse_flags["--no_underscored_option"]
+            assert flags == "--underscored_option"
 
         def turns_single_character_names_into_short_flags(self):
             self.c.add_arg("f")
@@ -220,12 +220,12 @@ class Context_:
 
         def underscored_args(self):
             c = Context(args=(Argument("i_have_underscores", help="yup"),))
-            result = c.help_for("--i-have-underscores")
-            assert result == ("--i-have-underscores=STRING", "yup")
+            result = c.help_for("--i_have_underscores")
+            assert result == ("--i_have_underscores=STRING", "yup")
 
         def true_default_args(self):
             c = Context(args=(Argument("truthy", kind=bool, default=True),))
-            assert c.help_for("--truthy") == ("--[no-]truthy", "")
+            assert c.help_for("--truthy") == ("--[no_]truthy", "")
 
     class help_tuples:
         def returns_list_of_help_tuples(self):

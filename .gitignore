@@ -9,3 +9,11 @@ src/
 htmlcov
 coverage.xml
 .cache
+/bin/
+/lib/
+/include/
+/.py37
+/.wenv
+/.idea
+/lib64
+/pyvenv.cfg

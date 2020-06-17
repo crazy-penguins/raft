@@ -8,7 +8,7 @@ import inspect
 import types
 
 from .context import Context
-from .parser import Argument, translate_underscores
+from .parser import Argument
 from .util import six
 
 if six.PY3:
@@ -26,7 +26,7 @@ class Task(object):
     Core object representing an executable task & its argument specification.
 
     For the most part, this object is a clearinghouse for all of the data that
-    may be supplied to the `@task <invoke.tasks.task>` decorator, such as
+    may be supplied to the `@task <raft.tasks.task>` decorator, such as
     ``name``, ``aliases``, ``positional`` etc, which appear as attributes.
 
     In addition, instantiation copies some introspection/documentation friendly
@@ -193,9 +193,9 @@ class Task(object):
             opts["incrementable"] = True
         # Argument name(s) (replace w/ dashed version if underscores present,
         # and move the underscored version to be the attr_name instead.)
-        if "_" in name:
-            opts["attr_name"] = name
-            name = translate_underscores(name)
+        # if "_" in name:
+        #     opts["attr_name"] = name
+        #     name = translate_underscores(name)
         names = [name]
         if self.auto_shortflags:
             # Must know what short names are available

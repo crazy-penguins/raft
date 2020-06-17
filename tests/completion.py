@@ -1,7 +1,7 @@
 import os
 import sys
 
-from invoke import Program
+from raft import Program
 
 import pytest
 
@@ -63,9 +63,9 @@ class CompletionScriptPrinter:
             invoke=False,
         )
         # Combines some sentinels from vanilla test, with checks that it's
-        # really replacing 'invoke' with desired binary names
+        # really replacing 'raft' with desired binary names
         assert "_complete_mya() {" in out
-        assert "invoke" not in out
+        assert "raft" not in out
         assert " mya myapp" in out
 
     def default_binary_names_is_completing_argv_0(self):
@@ -101,7 +101,7 @@ class ShellCompletion:
     """
 
     def no_input_means_just_task_names(self):
-        expect("-c simple_ns_list --complete", out="z-toplevel\na.b.subtask\n")
+        expect("-c simple_ns_list --complete", out="z_toplevel\na.b.subtask\n")
 
     def custom_binary_name_completes(self):
         expect(
@@ -142,30 +142,30 @@ class ShellCompletion:
 
     def task_names_only_complete_other_task_names(self):
         # Because only tokens starting with a dash should result in options.
-        assert "print-name" in _complete("print-foo", "integration")
+        assert "print_name" in _complete("print-foo", "integration")
 
     def task_name_completion_includes_tasks_already_seen(self):
         # Because it's valid to call the same task >1 time.
-        assert "print-foo" in _complete("print-foo", "integration")
+        assert "print_foo" in _complete("print-foo", "integration")
 
     def per_task_flags_complete_with_single_dashes(self):
         for flag in ("--name", "-n"):
-            assert flag in _complete("print-name -", "integration")
+            assert flag in _complete("print_name -", "integration")
 
     def per_task_flags_complete_with_double_dashes(self):
-        output = _complete("print-name --", "integration")
+        output = _complete("print_name --", "integration")
         assert "--name" in output
         assert "-n\n" not in output  # newline because -n is in --name
 
     def flag_completion_includes_inverse_booleans(self):
-        output = _complete("basic-bool -", "foo")
-        assert "--no-mybool" in output
+        output = _complete("basic_bool -", "foo")
+        assert "--no_mybool" in output
 
     def tasks_with_positional_args_complete_with_flags(self):
         # Because otherwise completing them is invalid anyways.
         # NOTE: this currently duplicates another test because this test cares
         # about a specific detail.
-        output = _complete("print-name --", "integration")
+        output = _complete("print_name --", "integration")
         assert "--name" in output
 
     def core_flags_taking_values_have_no_completion_output(self):
@@ -173,13 +173,13 @@ class ShellCompletion:
         assert _complete("-f") == ""
 
     def per_task_flags_taking_values_have_no_completion_output(self):
-        assert _complete("basic-arg --arg", "foo") == ""
+        assert _complete("basic_arg --arg", "foo") == ""
 
     def core_bool_flags_have_task_name_completion(self):
         assert "mytask" in _complete("--echo", "foo")
 
     def per_task_bool_flags_have_task_name_completion(self):
-        assert "mytask" in _complete("basic-bool --mybool", "foo")
+        assert "mytask" in _complete("basic_bool --mybool", "foo")
 
     def core_partial_or_invalid_flags_print_all_flags(self):
         for flag in ("--echo", "--complete"):
@@ -189,5 +189,5 @@ class ShellCompletion:
     def per_task_partial_or_invalid_flags_print_all_flags(self):
         for flag in ("--arg1", "--otherarg"):
             for given in ("--ar", "--nope"):
-                completion = _complete("multiple-args {}".format(given), "foo")
+                completion = _complete("multiple_args {}".format(given), "foo")
                 assert flag in completion

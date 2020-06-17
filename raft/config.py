@@ -398,22 +398,22 @@ class Config(DataProxy):
 
     - ``prefix``: Supplies the default value for ``file_prefix`` (directly) and
       ``env_prefix`` (uppercased). See their descriptions for details. Its
-      default value is ``"invoke"``.
+      default value is ``"raft"``.
     - ``file_prefix``: The config file 'basename' default (though it is not a
       literal basename; it can contain path parts if desired) which is appended
       to the configured values of ``system_prefix``, ``user_prefix``, etc, to
       arrive at the final (pre-extension) file paths.
 
       Thus, by default, a system-level config file path concatenates the
-      ``system_prefix`` of ``/etc/`` with the ``file_prefix`` of ``invoke`` to
-      arrive at paths like ``/etc/invoke.json``.
+      ``system_prefix`` of ``/etc/`` with the ``file_prefix`` of ``raft`` to
+      arrive at paths like ``/etc/raft.json``.
 
       Defaults to ``None``, meaning to use the value of ``prefix``.
 
     - ``env_prefix``: A prefix used (along with a joining underscore) to
       determine which environment variables are loaded as the env var
       configuration level. Since its default is the value of ``prefix``
-      capitalized, this means env vars like ``INVOKE_RUN_ECHO`` are sought by
+      capitalized, this means env vars like ``RAFT_RUN_ECHO`` are sought by
       default.
 
       Defaults to ``None``, meaning to use the value of ``prefix``.
@@ -421,7 +421,7 @@ class Config(DataProxy):
     .. versionadded:: 1.0
     """
 
-    prefix = "invoke"
+    prefix = "raft"
     file_prefix = None
     env_prefix = None
 
@@ -461,7 +461,7 @@ class Config(DataProxy):
             # - doing it at file load time might be somewhat useful, though
             # where this happens may be subject to change soon
             # - doing it at env var load time seems a bit silly given the
-            # existing support for at-startup testing for INVOKE_DEBUG
+            # existing support for at-startup testing for RAFT_DEBUG
             # 'debug': False,
             # TODO: I feel like we want these to be more consistent re: default
             # values stored here vs 'stored' as logic where they are
@@ -530,8 +530,8 @@ class Config(DataProxy):
             Base path for the global config file location; combined with the
             prefix and file suffixes to arrive at final file path candidates.
 
-            Default: ``/etc/`` (thus e.g. ``/etc/invoke.yaml`` or
-            ``/etc/invoke.json``).
+            Default: ``/etc/`` (thus e.g. ``/etc/raft.yaml`` or
+            ``/etc/raft.json``).
 
         :param str user_prefix:
             Like ``system_prefix`` but for the per-user config file. These
@@ -540,7 +540,7 @@ class Config(DataProxy):
             often means a leading dot, to make the final result a hidden file
             on most systems.
 
-            Default: ``~/.`` (e.g. ``~/.invoke.yaml``).
+            Default: ``~/.`` (e.g. ``~/.raft.yaml``).
 
         :param str project_location:
             Optional directory path of the currently loaded `.Collection` (as
@@ -697,7 +697,7 @@ class Config(DataProxy):
         Load a system-level config file, if possible.
 
         Checks the configured ``_system_prefix`` path, which defaults to
-        ``/etc``, and will thus load files like ``/etc/invoke.yml``.
+        ``/etc``, and will thus load files like ``/etc/raft.yml``.
 
         :param bool merge:
             Whether to merge the loaded data into the central config. Default:
@@ -714,7 +714,7 @@ class Config(DataProxy):
         Load a user-level config file, if possible.
 
         Checks the configured ``_user_prefix`` path, which defaults to ``~/.``,
-        and will thus load files like ``~/.invoke.yml``.
+        and will thus load files like ``~/.raft.yml``.
 
         :param bool merge:
             Whether to merge the loaded data into the central config. Default:
@@ -736,7 +736,7 @@ class Config(DataProxy):
 
         Thus, if one were to run the CLI tool against a tasks collection
         ``/home/myuser/code/tasks.py``, `load_project` would seek out files
-        like ``/home/myuser/code/invoke.yml``.
+        like ``/home/myuser/code/raft.yml``.
 
         :param bool merge:
             Whether to merge the loaded data into the central config. Default:

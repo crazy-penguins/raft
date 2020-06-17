@@ -434,9 +434,9 @@ class Collection(object):
         # None, etc.
         if not name:
             return name
-        from_, to = "_", "-"
-        if not self.auto_dash_names:
-            from_, to = "-", "_"
+        # from_, to = "_", "-"
+        # if not self.auto_dash_names:
+        from_, to = "-", "_"
         replaced = []
         end = len(name) - 1
         for i, char in enumerate(name):

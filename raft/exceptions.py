@@ -326,7 +326,7 @@ class ThreadException(Exception):
     .. versionadded:: 1.0
     """
 
-    #: A tuple of `ExceptionWrappers <invoke.util.ExceptionWrapper>` containing
+    #: A tuple of `ExceptionWrappers <raft.util.ExceptionWrapper>` containing
     #: the initial thread constructor kwargs (because `threading.Thread`
     #: subclasses should always be called with kwargs) and the caught exception
     #: for that thread as seen by `sys.exc_info` (so: type, value, traceback).

@@ -5,11 +5,11 @@ import sys
 from pytest import skip
 from pytest_relaxed import trap
 
-from invoke.util import six
+from raft.util import six
 
-from invoke import run
-from invoke._version import __version__
-from invoke.terminals import WINDOWS
+from raft import run
+from raft._version import __version__
+from raft.terminals import WINDOWS
 
 from _util import only_utf8
 
@@ -35,19 +35,19 @@ class Main:
     class basics:
         @trap
         def basic_invocation(self):
-            _output_eq("invoke print-foo", "foo\n")
+            _output_eq("raft print-foo", "foo\n")
 
         @trap
         def version_output(self):
-            _output_eq("invoke --version", "Invoke {}\n".format(__version__))
+            _output_eq("raft --version", "Invoke {}\n".format(__version__))
 
         @trap
         def help_output(self):
-            assert "Usage: inv[oke] " in run("invoke --help").stdout
+            assert "Usage: inv[oke] " in run("raft --help").stdout
 
         @trap
         def per_task_help(self):
-            assert "Frobazz" in run("invoke -c _explicit foo --help").stdout
+            assert "Frobazz" in run("raft -c _explicit foo --help").stdout
 
         @trap
         def shorthand_binary_name(self):
@@ -69,7 +69,7 @@ class Main:
             assert result.stderr
 
         def loads_real_user_config(self):
-            path = os.path.expanduser("~/.invoke.yaml")
+            path = os.path.expanduser("~/.raft.yaml")
             try:
                 with open(path, "w") as fd:
                     fd.write("foo: bar")
@@ -86,7 +86,7 @@ class Main:
             if sys.version_info < (2, 7):
                 skip()
             _output_eq(
-                "python -m invoke print-name --name mainline", "mainline\n"
+                "python -m raft print-name --name mainline", "mainline\n"
             )
 
     class funky_characters_in_stdout:

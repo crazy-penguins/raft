@@ -4,7 +4,7 @@ A semi-integration-test style fixture spanning multiple feature examples.
 If we're being honest, though, the new 'tree' fixture package is a lot bigger.
 """
 
-from invoke.tasks import task
+from raft.tasks import task
 
 
 @task

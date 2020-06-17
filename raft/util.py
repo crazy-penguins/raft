@@ -12,24 +12,20 @@ import sys
 # thus must import our 'vendored' stuff from the overall environment.)
 # All other uses of six, Lexicon, etc should do 'from .util import six' etc.
 # Saves us from having to update the same logic in a dozen places.
-# TODO: would this make more sense to put _into_ invoke.vendor? That way, the
+# TODO: would this make more sense to put _into_ raft.vendor? That way, the
 # import lines which now read 'from .util import <third party stuff>' would be
-# more obvious. Requires packagers to leave invoke/vendor/__init__.py alone tho
+# more obvious. Requires packagers to leave raft/vendor/__init__.py alone tho
 # NOTE: we also grab six.moves internals directly so other modules don't have
 # to worry about it (they can't rely on the imported 'six' directly via
 # attribute access, since six.moves does import shenanigans.)
 try:
     from .vendor.lexicon import Lexicon  # noqa
-    from .vendor import six
+    from .vendor import six  # noqa
     from .vendor.six.moves import reduce  # noqa
-
-    if six.PY3:
-        from .vendor import yaml3 as yaml  # noqa
-    else:
-        from .vendor import yaml2 as yaml  # noqa
+    from .vendor import yaml3 as yaml  # noqa
 except ImportError:
     from lexicon import Lexicon  # noqa
-    import six
+    import six  # noqa
     from six.moves import reduce  # noqa
     import yaml  # noqa
 
@@ -43,11 +39,11 @@ def enable_logging():
 
 # Allow from-the-start debugging (vs toggled during load of tasks module) via
 # shell env var.
-if os.environ.get("INVOKE_DEBUG"):
+if os.environ.get("RAFT_DEBUG"):
     enable_logging()
 
 # Add top level logger functions to global namespace. Meh.
-log = logging.getLogger("invoke")
+log = logging.getLogger("raft")
 for x in ("debug",):
     globals()[x] = getattr(log, x)
 
@@ -152,11 +148,6 @@ def encode_output(string, encoding):
     # UTF-8, ascii is still actually used, and explodes.
     # Python 3 doesn't have this problem, so we delegate encoding to the
     # io.*Writer classes involved.
-    if six.PY2:
-        # TODO: split up encoding settings (currently, the one we are given -
-        # often a Runner.encoding value - is used for both input and output),
-        # only use the one for 'local encoding' here.
-        string = string.encode(encoding)
     return string
 
 
