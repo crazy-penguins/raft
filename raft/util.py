@@ -20,12 +20,12 @@ import sys
 # attribute access, since six.moves does import shenanigans.)
 try:
     from .vendor.lexicon import Lexicon  # noqa
-    from .vendor import six
+    from .vendor import six  # noqa
     from .vendor.six.moves import reduce  # noqa
     from .vendor import yaml3 as yaml  # noqa
 except ImportError:
     from lexicon import Lexicon  # noqa
-    import six
+    import six  # noqa
     from six.moves import reduce  # noqa
     import yaml  # noqa
 

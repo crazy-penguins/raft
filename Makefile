@@ -18,3 +18,20 @@ test:
 
 lint:
 	flake8 raft tests raft_examples
+
+build:
+	source bin/activate \
+	  && python -B -O setup.py sdist 
+	  # && python -B -O setup.py bdist_wheel
+
+clean:
+	source bin/activate \
+	  && python -B -O setup.py clean
+	rm -rf build dist
+	rm -r raft.egg-info
+
+upload:
+	source bin/activate \
+	  && twine upload dist/*
+
+deploy: clean build upload
