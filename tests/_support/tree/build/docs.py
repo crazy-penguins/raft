@@ -1,6 +1,6 @@
 "Tasks for managing Sphinx docs."
 
-from invoke import task, Collection
+from raft import task, Collection
 
 
 @task(name="all", default=True)

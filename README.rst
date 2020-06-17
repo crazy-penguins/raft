@@ -1,7 +1,10 @@
-Welcome to Invoke!
+Welcome to Raft!
 ==================
 
-Invoke is a Python (2.7 and 3.4+) library for managing shell-oriented
+raft is a Python (3.4+) library for managing shell-oriented that is a fork
+of the venerable invoke library.  Unlike invoke, raft takes after its
+grandmother (fab) and preserves underscores in both command names and
+argument names.
 subprocesses and organizing executable Python code into CLI-invokable tasks. It
 draws inspiration from various sources (``make``/``rake``, Fabric 1.x, etc) to
 arrive at a powerful & clean feature set.

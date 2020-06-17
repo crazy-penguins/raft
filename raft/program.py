@@ -23,7 +23,7 @@ class Program(object):
     Manages top-level CLI invocation, typically via ``setup.py`` entrypoints.
 
     Designed for distributing Invoke task collections as standalone programs,
-    but also used internally to implement the ``invoke`` program itself.
+    but also used internally to implement the ``raft`` program itself.
 
     .. seealso::
         :ref:`reusing-as-a-binary` for a tutorial/walkthrough of this
@@ -141,12 +141,12 @@ class Program(object):
         Return default task-related `.Argument` objects, as a list.
 
         These are only added to the core args in "task runner" mode (the
-        default for ``invoke`` itself) - they are omitted when the constructor
+        default for ``raft`` itself) - they are omitted when the constructor
         is given a non-empty ``namespace`` argument ("bundled namespace" mode).
 
         .. versionadded:: 1.0
         """
-        # Arguments pertaining specifically to invocation as 'invoke' itself
+        # Arguments pertaining specifically to invocation as 'raft' itself
         # (or as other arbitrary-task-executing programs, like 'fab')
         return [
             Argument(
@@ -193,7 +193,7 @@ class Program(object):
         :param namespace:
             A `.Collection` to use as this program's subcommands.
 
-            If ``None`` (the default), the program will behave like ``invoke``,
+            If ``None`` (the default), the program will behave like ``raft``,
             seeking a nearby task namespace with a `.Loader` and exposing
             arguments such as :option:`--list` and :option:`--collection` for
             inspecting or selecting specific namespaces.
@@ -215,7 +215,7 @@ class Program(object):
             Descriptive lowercase binary name string used in help text.
 
             For example, Invoke's own internal value for this is ``inv[oke]``,
-            denoting that it is installed as both ``inv`` and ``invoke``. As
+            denoting that it is installed as both ``inv`` and ``raft``. As
             this is purely text intended for help display, it may be in any
             format you wish, though it should match whatever you've put into
             your ``setup.py``'s ``console_scripts`` entry.
@@ -231,7 +231,7 @@ class Program(object):
             that completion for all of this program's installed names.
 
             For example, Invoke's internal default for this is ``["inv",
-            "invoke"]``.
+            "raft"]``.
 
             If ``None`` (the default), the first word in ``argv`` (in the
             invocation of :option:`--print-completion-script`) is used in a
@@ -332,7 +332,7 @@ class Program(object):
         self.config.load_overrides(overrides, merge=False)
         runtime_path = self.args.config.value
         if runtime_path is None:
-            runtime_path = os.environ.get("INVOKE_RUNTIME_CONFIG", None)
+            runtime_path = os.environ.get("RAFT_RUNTIME_CONFIG", None)
         self.config.set_runtime_path(runtime_path)
         self.config.load_runtime(merge=False)
         if merge:
@@ -419,7 +419,7 @@ class Program(object):
         sys.dont_write_bytecode = not self.args["write-pyc"].value
 
         # Enable debugging from here on out, if debug flag was given.
-        # (Prior to this point, debugging requires setting INVOKE_DEBUG).
+        # (Prior to this point, debugging requires setting RAFT_DEBUG).
         if self.args.debug.value:
             enable_logging()
 
@@ -810,7 +810,7 @@ class Program(object):
             aliases = list(map(coll.transform, sorted(task.aliases)))
             # If displaying a sub-collection (or if we are displaying a given
             # namespace/root), tack on some dots to make it clear these names
-            # require dotted paths to invoke.
+            # require dotted paths to raft.
             if ancestors or self.list_root:
                 displayname = ".{}".format(displayname)
                 aliases = [".{}".format(x) for x in aliases]

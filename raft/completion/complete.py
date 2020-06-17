@@ -96,7 +96,7 @@ def print_task_names(collection):
 
 
 def print_completion_script(shell, names):
-    # Grab all .completion files in invoke/completion/. (These used to have no
+    # Grab all .completion files in raft/completion/. (These used to have no
     # suffix, but surprise, that's super fragile.
     completions = {
         os.path.splitext(os.path.basename(x))[0]: x

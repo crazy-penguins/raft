@@ -26,7 +26,7 @@ class Task(object):
     Core object representing an executable task & its argument specification.
 
     For the most part, this object is a clearinghouse for all of the data that
-    may be supplied to the `@task <invoke.tasks.task>` decorator, such as
+    may be supplied to the `@task <raft.tasks.task>` decorator, such as
     ``name``, ``aliases``, ``positional`` etc, which appear as attributes.
 
     In addition, instantiation copies some introspection/documentation friendly

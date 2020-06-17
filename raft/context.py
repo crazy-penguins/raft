@@ -3,7 +3,7 @@ import re
 from contextlib import contextmanager
 
 try:
-    from invoke.vendor.six import raise_from, iteritems
+    from raft.vendor.six import raise_from, iteritems
 except ImportError:
     from six import raise_from, iteritems
 
@@ -161,7 +161,7 @@ class Context(DataProxy):
           ``sudo.*`` tree.
 
             - Thus you could, for example, pre-set a sudo user in a config
-              file; such as an ``invoke.json`` containing ``{"sudo": {"user":
+              file; such as an ``raft.json`` containing ``{"sudo": {"user":
               "someuser"}}``.
 
         :param str password: Runtime override for ``sudo.password``.

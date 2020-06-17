@@ -66,7 +66,17 @@ inspiration from various sources to arrive at a powerful & clean feature set.
 
   .. doctest:: blurb
 
-      >>> from invoke import run
+      >>> from raft import run
+            >>> cmd = "pip install -r requirements.txt"
+            >>> result = run(cmd, hide=True, warn=True)
+            >>> print(result.ok)
+            True
+            >>> print(result.stdout.splitlines()[-1])
+            Successfully installed invocations-0.13.0 pep8-1.5.7 spec-1.3.1
+
+      * Following the lead of most Unix CLI applications, it offers a traditional
+        flag-based style of command-line parsing, deriving flag names and value types
+        from task signatures (optionally, of course!)
       >>> cmd = "pip install -r requirements.txt"
       >>> result = run(cmd, hide=True, warn=True)
       >>> print(result.ok)

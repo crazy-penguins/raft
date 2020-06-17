@@ -2,7 +2,7 @@ import os
 
 from pytest import skip
 
-from invoke import Context, Config
+from raft import Context, Config
 
 
 class Context_:

@@ -8,14 +8,14 @@ except ImportError:
     termios = None
 from contextlib import contextmanager
 
-from invoke.vendor.six import BytesIO, b, wraps
+from raft.vendor.six import BytesIO, b, wraps
 
 from mock import patch, Mock
 from pytest import skip
 from pytest_relaxed import trap
 
-from invoke import Program, Runner
-from invoke.terminals import WINDOWS
+from raft import Program, Runner
+from raft.terminals import WINDOWS
 
 
 support = os.path.join(os.path.dirname(__file__), "_support")
@@ -59,15 +59,15 @@ def run(invocation, program=None, invoke=True):
 
     ``program`` defaults to ``Program()``.
 
-    To skip automatically assuming the argv under test starts with ``"invoke
-    "``, say ``invoke=False``.
+    To skip automatically assuming the argv under test starts with ``"raft
+    "``, say ``raft=False``.
 
     :returns: Two-tuple of ``stdout, stderr`` strings.
     """
     if program is None:
         program = Program()
     if invoke:
-        invocation = "invoke {}".format(invocation)
+        invocation = "raft {}".format(invocation)
     program.run(invocation, exit=False)
     return sys.stdout.getvalue(), sys.stderr.getvalue()
 
@@ -82,8 +82,8 @@ def expect(
 
     ``program`` defaults to ``Program()``.
 
-    To skip automatically assuming the argv under test starts with ``"invoke
-    "``, say ``invoke=False``.
+    To skip automatically assuming the argv under test starts with ``"raft
+    "``, say ``raft=False``.
 
     To customize the operator used for testing (default: equality), use
     ``test`` (which should be an assertion wrapper of some kind).
@@ -118,7 +118,7 @@ class MockSubprocess(object):
 
     def start(self):
         # Start patchin'
-        self.popen = patch("invoke.runners.Popen")
+        self.popen = patch("raft.runners.Popen")
         Popen = self.popen.start()
         self.read = patch("os.read")
         read = self.read.start()
@@ -156,7 +156,7 @@ def mock_subprocess(out="", err="", exit=0, isatty=None, insert_Popen=False):
         # though in our case those are not applying to the test function!)
         # Doesn't matter what we patch as long as it doesn't
         # actually get in our way.
-        @patch("invoke.runners.pty")
+        @patch("raft.runners.pty")
         def wrapper(*args, **kwargs):
             proc = MockSubprocess(
                 out=out, err=err, exit=exit, isatty=isatty, autostart=False
@@ -195,11 +195,11 @@ def mock_pty(
     def decorator(f):
         import fcntl
 
-        ioctl_patch = patch("invoke.runners.fcntl.ioctl", wraps=fcntl.ioctl)
+        ioctl_patch = patch("raft.runners.fcntl.ioctl", wraps=fcntl.ioctl)
 
         @wraps(f)
-        @patch("invoke.runners.pty")
-        @patch("invoke.runners.os")
+        @patch("raft.runners.pty")
+        @patch("raft.runners.os")
         @ioctl_patch
         def wrapper(*args, **kwargs):
             args = list(args)

@@ -1,8 +1,8 @@
 from mock import Mock
 from pytest import raises, skip
 
-from invoke import Context, Config, task, Task, Call, Collection
-from invoke import FilesystemLoader as Loader
+from raft import Context, Config, task, Task, Call, Collection
+from raft import FilesystemLoader as Loader
 
 from _util import support
 
