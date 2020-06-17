@@ -313,7 +313,7 @@ class Task_:
 
         def shortflags_dont_care_about_positionals(self):
             "Positionalness doesn't impact whether shortflags are made"
-            for short, long_ in (("a", "arg1"), ("r", "arg2"), ("g", "arg-3")):
+            for short, long_ in (("a", "arg1"), ("r", "arg2"), ("g", "arg_3")):
                 assert self.argdict[short] is self.argdict[long_]
 
         def autocreated_short_flags_can_be_disabled(self):
@@ -366,8 +366,8 @@ class Task_:
                 pass
 
             arg = mytask.get_arguments()[0]
-            assert arg.names == ("longer-arg", "l")
-            assert arg.attr_name == "longer_arg"
+            assert arg.names == ("longer_arg", "l")
+            assert arg.attr_name is None
             assert arg.name == "longer_arg"
 
 

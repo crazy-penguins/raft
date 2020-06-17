@@ -359,18 +359,18 @@ class Program_:
         def explicit_namespace_works_correctly(self):
             # Regression-ish test re #288
             ns = Collection.from_module(load("integration"))
-            expect("print-foo", out="foo\n", program=Program(namespace=ns))
+            expect("print_foo", out="foo\n", program=Program(namespace=ns))
 
         def allows_explicit_task_module_specification(self):
-            expect("-c integration print-foo", out="foo\n")
+            expect("-c integration print_foo", out="foo\n")
 
         def handles_task_arguments(self):
-            expect("-c integration print-name --name inigo", out="inigo\n")
+            expect("-c integration print_name --name inigo", out="inigo\n")
 
         def can_change_collection_search_root(self):
             for flag in ("-r", "--search-root"):
                 expect(
-                    "{} branch/ alt-root".format(flag),
+                    "{} branch/ alt_root".format(flag),
                     out="Down with the alt-root!\n",
                 )
 
@@ -721,9 +721,9 @@ Available tasks:
                     "foo",
                     "post1",
                     "post2",
-                    "print-foo",
-                    "print-name",
-                    "print-underscored-arg",
+                    "print_foo",
+                    "print_name",
+                    "print_underscored_arg",
                 )
             )
             for flag in ("-l", "--list"):
@@ -733,7 +733,7 @@ Available tasks:
             self._list_eq("namespacing", ("toplevel", "module.mytask"))
 
         def top_level_tasks_listed_first(self):
-            self._list_eq("simple_ns_list", ("z-toplevel", "a.b.subtask"))
+            self._list_eq("simple_ns_list", ("z_toplevel", "a.b.subtask"))
 
         def aliases_sorted_alphabetically(self):
             self._list_eq("alias_sorting", ("toplevel (a, z)",))
@@ -743,8 +743,8 @@ Available tasks:
             self._list_eq(
                 "explicit_root",
                 (
-                    "top-level (other-top)",
-                    "sub-level.sub-task (sub-level, sub-level.other-sub)",
+                    "top_level (other_top)",
+                    "sub_level.sub_task (sub_level, sub_level.other_sub)",
                 ),
             )
 
@@ -752,11 +752,11 @@ Available tasks:
             self._list_eq(
                 "docstrings",
                 (
-                    "leading-whitespace    foo",
-                    "no-docstring",
-                    "one-line              foo",
-                    "two-lines             foo",
-                    "with-aliases (a, b)   foo",
+                    "leading_whitespace    foo",
+                    "no_docstring",
+                    "one_line              foo",
+                    "two_lines             foo",
+                    "with_aliases (a, b)   foo",
                 ),
             )
 
@@ -764,9 +764,9 @@ Available tasks:
             self._list_eq(
                 "nontrivial_docstrings",
                 (
-                    "no-docstring",
-                    "task-one       Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                 Nullam id dictum",  # noqa
-                    "task-two       Nulla eget ultrices ante. Curabitur sagittis commodo posuere.\n                 Duis dapibus",  # noqa
+                    "no_docstring",
+                    "task_one       Lorem ipsum dolor sit amet, consectetur adipiscing elit.\n                 Nullam id dictum",  # noqa
+                    "task_two       Nulla eget ultrices ante. Curabitur sagittis commodo posuere.\n                 Duis dapibus",  # noqa
                 ),
             )
 
@@ -787,9 +787,9 @@ Available tasks:
 
   shell (ipython)                       Load a REPL with project state already
                                         set up.
-  test (run-tests)                      Run the test suite with baked-in args.
+  test (run_tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs.all (build.docs)           Build all doc formats.
   build.docs.html                       Build HTML output only.
@@ -797,7 +797,7 @@ Available tasks:
   build.python.all (build.python)       Build all Python packages.
   build.python.sdist                    Build classic style tar.gz.
   build.python.wheel                    Build a wheel.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -815,7 +815,7 @@ Default task: test
                 expected = """Available 'build' tasks:
 
   .all (.everything)      Build all necessary artifacts.
-  .c-ext (.ext)           Build our internal C extension.
+  .c_ext (.ext)           Build our internal C extension.
   .zap                    A silly way to clean.
   .docs.all (.docs)       Build all doc formats.
   .docs.html              Build HTML output only.
@@ -866,7 +866,7 @@ Default 'build.docs' task: .all
 
   shell (ipython)                  Load a REPL with project state already set
                                    up.
-  test (run-tests)                 Run the test suite with baked-in args.
+  test (run_tests)                 Run the test suite with baked-in args.
   build [3 tasks, 2 collections]   Tasks for compiling static code and assets.
   deploy [3 tasks]                 How to deploy our code and configs.
   provision [2 tasks]              System setup code.
@@ -883,13 +883,13 @@ Default task: test
 
   shell (ipython)                       Load a REPL with project state already
                                         set up.
-  test (run-tests)                      Run the test suite with baked-in args.
+  test (run_tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs [3 tasks]                  Tasks for managing Sphinx docs.
   build.python [3 tasks]                PyPI/etc distribution artifacts.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -907,9 +907,9 @@ Default task: test
 
   shell (ipython)                       Load a REPL with project state already
                                         set up.
-  test (run-tests)                      Run the test suite with baked-in args.
+  test (run_tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs.all (build.docs)           Build all doc formats.
   build.docs.html                       Build HTML output only.
@@ -917,7 +917,7 @@ Default task: test
   build.python.all (build.python)       Build all Python packages.
   build.python.sdist                    Build classic style tar.gz.
   build.python.wheel                    Build a wheel.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -933,7 +933,7 @@ Default task: test
                 expected = """Available 'build' tasks (depth=1):
 
   .all (.everything)   Build all necessary artifacts.
-  .c-ext (.ext)        Build our internal C extension.
+  .c_ext (.ext)        Build our internal C extension.
   .zap                 A silly way to clean.
   .docs [3 tasks]      Tasks for managing Sphinx docs.
   .python [3 tasks]    PyPI/etc distribution artifacts.
@@ -949,7 +949,7 @@ Default 'build' task: .all
 
   shell (ipython)                  Load a REPL with project state already set
                                    up.
-  test (run-tests)                 Run the test suite with baked-in args.
+  test (run_tests)                 Run the test suite with baked-in args.
   build [3 tasks, 2 collections]   Tasks for compiling static code and assets.
   deploy [3 tasks]                 How to deploy our code and configs.
   provision [2 tasks]              System setup code.
@@ -965,9 +965,9 @@ Default task: test
 
   shell (ipython)                       Load a REPL with project state already
                                         set up.
-  test (run-tests)                      Run the test suite with baked-in args.
+  test (run_tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs.all (build.docs)           Build all doc formats.
   build.docs.html                       Build HTML output only.
@@ -975,7 +975,7 @@ Default task: test
   build.python.all (build.python)       Build all Python packages.
   build.python.sdist                    Build classic style tar.gz.
   build.python.wheel                    Build a wheel.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -995,9 +995,9 @@ Default task: test
 
   shell (ipython)                       Load a REPL with project state already
                                         set up.
-  test (run-tests)                      Run the test suite with baked-in args.
+  test (run_tests)                      Run the test suite with baked-in args.
   build.all (build, build.everything)   Build all necessary artifacts.
-  build.c-ext (build.ext)               Build our internal C extension.
+  build.c_ext (build.ext)               Build our internal C extension.
   build.zap                             A silly way to clean.
   build.docs.all (build.docs)           Build all doc formats.
   build.docs.html                       Build HTML output only.
@@ -1005,7 +1005,7 @@ Default task: test
   build.python.all (build.python)       Build all Python packages.
   build.python.sdist                    Build classic style tar.gz.
   build.python.wheel                    Build a wheel.
-  deploy.db (deploy.db-servers)         Deploy to our database servers.
+  deploy.db (deploy.db_servers)         Deploy to our database servers.
   deploy.everywhere (deploy)            Deploy to all targets.
   deploy.web                            Update and bounce the webservers.
   provision.db                          Stand up one or more DB servers.
@@ -1022,10 +1022,10 @@ Default task: test
                     expected = """Available tasks ('*' denotes collection defaults):
 
   shell (ipython)           Load a REPL with project state already set up.
-  test* (run-tests)         Run the test suite with baked-in args.
+  test* (run_tests)         Run the test suite with baked-in args.
   build                     Tasks for compiling static code and assets.
       .all* (.everything)   Build all necessary artifacts.
-      .c-ext (.ext)         Build our internal C extension.
+      .c_ext (.ext)         Build our internal C extension.
       .zap                  A silly way to clean.
       .docs                 Tasks for managing Sphinx docs.
           .all*             Build all doc formats.
@@ -1036,7 +1036,7 @@ Default task: test
           .sdist            Build classic style tar.gz.
           .wheel            Build a wheel.
   deploy                    How to deploy our code and configs.
-      .db (.db-servers)     Deploy to our database servers.
+      .db (.db_servers)     Deploy to our database servers.
       .everywhere*          Deploy to all targets.
       .web                  Update and bounce the webservers.
   provision                 System setup code.
@@ -1054,7 +1054,7 @@ Default task: test
                     expected = """Available 'build' tasks ('*' denotes collection defaults):
 
   .all* (.everything)   Build all necessary artifacts.
-  .c-ext (.ext)         Build our internal C extension.
+  .c_ext (.ext)         Build our internal C extension.
   .zap                  A silly way to clean.
   .docs                 Tasks for managing Sphinx docs.
       .all*             Build all doc formats.
@@ -1074,15 +1074,15 @@ Default 'build' task: .all
                     expected = """Available tasks (depth=2; '*' denotes collection defaults):
 
   shell (ipython)           Load a REPL with project state already set up.
-  test* (run-tests)         Run the test suite with baked-in args.
+  test* (run_tests)         Run the test suite with baked-in args.
   build                     Tasks for compiling static code and assets.
       .all* (.everything)   Build all necessary artifacts.
-      .c-ext (.ext)         Build our internal C extension.
+      .c_ext (.ext)         Build our internal C extension.
       .zap                  A silly way to clean.
       .docs [3 tasks]       Tasks for managing Sphinx docs.
       .python [3 tasks]     PyPI/etc distribution artifacts.
   deploy                    How to deploy our code and configs.
-      .db (.db-servers)     Deploy to our database servers.
+      .db (.db_servers)     Deploy to our database servers.
       .everywhere*          Deploy to all targets.
       .web                  Update and bounce the webservers.
   provision                 System setup code.
@@ -1099,10 +1099,10 @@ Default task: test
                     expected = """Available tasks (depth=5; '*' denotes collection defaults):
 
   shell (ipython)           Load a REPL with project state already set up.
-  test* (run-tests)         Run the test suite with baked-in args.
+  test* (run_tests)         Run the test suite with baked-in args.
   build                     Tasks for compiling static code and assets.
       .all* (.everything)   Build all necessary artifacts.
-      .c-ext (.ext)         Build our internal C extension.
+      .c_ext (.ext)         Build our internal C extension.
       .zap                  A silly way to clean.
       .docs                 Tasks for managing Sphinx docs.
           .all*             Build all doc formats.
@@ -1113,7 +1113,7 @@ Default task: test
           .sdist            Build classic style tar.gz.
           .wheel            Build a wheel.
   deploy                    How to deploy our code and configs.
-      .db (.db-servers)     Deploy to our database servers.
+      .db (.db_servers)     Deploy to our database servers.
       .everywhere*          Deploy to all targets.
       .web                  Update and bounce the webservers.
   provision                 System setup code.
@@ -1130,7 +1130,7 @@ Default task: test
                     expected = """Available 'build' tasks (depth=1; '*' denotes collection defaults):
 
   .all* (.everything)   Build all necessary artifacts.
-  .c-ext (.ext)         Build our internal C extension.
+  .c_ext (.ext)         Build our internal C extension.
   .zap                  A silly way to clean.
   .docs [3 tasks]       Tasks for managing Sphinx docs.
   .python [3 tasks]     PyPI/etc distribution artifacts.
@@ -1333,7 +1333,7 @@ post2
 
         def env_vars_load_with_prefix(self, monkeypatch):
             monkeypatch.setenv("INVOKE_RUN_ECHO", "1")
-            expect("-c contextualized check-echo")
+            expect("-c contextualized check_echo")
 
         def env_var_prefix_can_be_overridden(self, monkeypatch):
             monkeypatch.setenv("MYAPP_RUN_HIDE", "both")
@@ -1349,7 +1349,7 @@ post2
                 env_prefix = "MYAPP"
 
             p = Program(config_class=MyConf)
-            p.run("inv -c contextualized check-hide")
+            p.run("inv -c contextualized check_hide")
 
     class other_behavior:
         @patch("invoke.program.getpass.getpass")
@@ -1361,7 +1361,7 @@ post2
             with support_path():
                 try:
                     Program().run(
-                        "inv --prompt-for-sudo-password -c sudo_prompt expect-config"  # noqa
+                        "inv --prompt-for-sudo-password -c sudo_prompt expect_config"  # noqa
                     )
                 except SystemExit as e:
                     # If inner call failed, we'll already have seen its output,

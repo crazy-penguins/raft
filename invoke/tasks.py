@@ -193,9 +193,9 @@ class Task(object):
             opts["incrementable"] = True
         # Argument name(s) (replace w/ dashed version if underscores present,
         # and move the underscored version to be the attr_name instead.)
-        if "_" in name:
-            opts["attr_name"] = name
-            name = translate_underscores(name)
+        # if "_" in name:
+        #     opts["attr_name"] = name
+        #     name = translate_underscores(name)
         names = [name]
         if self.auto_shortflags:
             # Must know what short names are available

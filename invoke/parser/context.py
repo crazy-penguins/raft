@@ -9,7 +9,7 @@ from .argument import Argument
 
 
 def translate_underscores(name):
-    return name.lstrip("_").rstrip("_").replace("_", "-")
+    return name.lstrip("_").rstrip("_")
 
 
 def to_flag(name):
@@ -111,7 +111,7 @@ class ParserContext(object):
           into CLI flags, e.g. ``"foo"`` is accessible via ``flags['--foo']``.
         * ``inverse_flags``: similar to ``flags`` but containing only the
           "inverse" versions of boolean flags which default to True. This
-          allows the parser to track e.g. ``--no-myflag`` and turn it into a
+          allows the parser to track e.g. ``--no_myflag`` and turn it into a
           False value for the ``myflag`` Argument.
 
         .. versionadded:: 1.0
@@ -145,7 +145,7 @@ class ParserContext(object):
             # Invert the 'main' flag name here, which will be a dashed version
             # of the primary argument name if underscore-to-dash transformation
             # occurred.
-            inverse_name = to_flag("no-{}".format(main))
+            inverse_name = to_flag("no_{}".format(main))
             self.inverse_flags[inverse_name] = to_flag(main)
 
     @property
@@ -201,7 +201,7 @@ class ParserContext(object):
                 # no value => boolean
                 # check for inverse
                 if name in self.inverse_flags.values():
-                    name = "--[no-]{}".format(name[2:])
+                    name = "--[no_]{}".format(name[2:])
 
                 valuestr = ""
             # Tack together

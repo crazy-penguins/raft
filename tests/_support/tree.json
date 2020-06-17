@@ -9,7 +9,7 @@
         },
         {
             "name": "test",
-            "aliases": ["run-tests"],
+            "aliases": ["run_tests"],
             "help": "Run the test suite with baked-in args."
         }
     ],
@@ -25,7 +25,7 @@
                     "help": "Build all necessary artifacts."
                 },
                 {
-                    "name": "c-ext",
+                    "name": "c_ext",
                     "aliases": ["ext"],
                     "help": "Build our internal C extension."
                 },
@@ -91,7 +91,7 @@
             "tasks": [
                 {
                     "name": "db",
-                    "aliases": ["db-servers"],
+                    "aliases": ["db_servers"],
                     "help": "Deploy to our database servers."
                 },
                 {
