@@ -226,14 +226,21 @@ class Collection(object):
                 ret._configuration = obj_config
                 return ret
         # Failing that, make our own collection from the module's tasks.
-        tasks = filter(lambda x: isinstance(x, Task), vars(module).values())
         # Again, explicit name wins over implicit one from module path
         collection = instantiate()
-        for task in tasks:
-            collection.add_task(task)
+        collection.add_tasks(module)
         if config:
             collection.configure(config)
         return collection
+
+    def add_tasks(self, module):
+        """
+        Adds one or more tasks to this Collection from a module
+        """
+        tasks = filter(lambda x: isinstance(x, Task), vars(module).values())
+        for task in tasks:
+            self.add_task(task)
+
 
     def add_task(self, task, name=None, aliases=None, default=None):
         """
