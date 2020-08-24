@@ -52,3 +52,14 @@ API documentation:
     :glob:
 
     api/*
+
+convocations
+------------
+
+Want to use predefined raft / convoke tasks that you can use to get started?
+
+.. toctree::
+    :macdepth: 1
+    :glob:
+
+    convocations/*

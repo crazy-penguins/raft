@@ -45,6 +45,9 @@ setup(
             "convoke = raft.main:program.run",
         ]
     },
+    extras_require={
+        'convocations': [ 'sewer[route53]==0.8.2', ]
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "Environment :: Console",

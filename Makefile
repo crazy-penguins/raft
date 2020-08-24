@@ -17,7 +17,7 @@ test:
 		  tests/
 
 lint:
-	flake8 raft tests raft_examples
+	flake8 raft tests raft_examples convocations
 
 build:
 	source bin/activate \
