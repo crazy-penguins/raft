@@ -36,7 +36,7 @@ from ..util import tmpdir
 from ..console import confirm
 
 
-debug = logging.getLogger("invocations.packaging.release").debug
+debug = logging.getLogger("convocations.packaging.release").debug
 
 
 # TODO: this could be a good module to test out a more class-centric method of

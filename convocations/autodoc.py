@@ -1,7 +1,7 @@
 """
 Sphinx autodoc hooks for documenting raft-level objects such as tasks.
 
-Unlike most of the rest of Invocations, this module isn't for reuse in the
+Unlike most of the rest of Convocations, this module isn't for reuse in the
 "import and call functions" sense, but instead acts as a Sphinx extension which
 allows Sphinx's `autodoc`_ functionality to see and document
 raft tasks and similar raft objects.
@@ -18,7 +18,7 @@ raft tasks and similar raft objects.
 
 To use:
 
-- Add ``"sphinx.ext.autodoc"`` and ``"invocations.autodoc"`` to your Sphinx
+- Add ``"sphinx.ext.autodoc"`` and ``"convocations.autodoc"`` to your Sphinx
   ``conf.py``'s ``extensions`` list.
 - Use Sphinx autodoc's ``automodule`` directive normally, aiming it at your
   tasks module(s), e.g. ``.. automodule:: myproject.tasks`` in some ``.rst``
