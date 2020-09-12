@@ -132,7 +132,7 @@ class Runner(object):
 
         :param str shell:
             Which shell binary to use. Default: ``/bin/bash`` (on Unix;
-            ``COMSPEC`` or ``cmd.exe`` on Windows.)
+            ``COMSPEC`` or ``powershell.exe`` on Windows.)
 
         :param bool warn:
             Whether to warn and continue, instead of raising

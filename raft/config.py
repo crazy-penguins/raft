@@ -443,7 +443,12 @@ class Config(DataProxy):
         # var (https://en.wikipedia.org/wiki/COMSPEC) or fallback to an
         # unqualified cmd.exe otherwise.
         if WINDOWS:
-            shell = os.environ.get("COMSPEC", "cmd.exe")
+            shell = (
+                r'c:\windows\system32\windowspowershell'
+                r'\v1.0\powershell.exe'
+            )
+            if not os.path.exists(shell):
+                shell = os.environ.get("COMSPEC", "cmd.exe")
         # Else, assume Unix, most distros of which have /bin/bash available.
         # TODO: consider an automatic fallback to /bin/sh for systems lacking
         # /bin/bash; however users may configure run.shell quite easily, so...
