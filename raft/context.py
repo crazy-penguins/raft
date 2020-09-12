@@ -242,8 +242,10 @@ class Context(DataProxy):
         current_directory = self.cwd
         if current_directory:
             prefixes.insert(0, "cd {}".format(current_directory))
-
-        return " && ".join(prefixes + [command])
+        glue = ' && '
+        if 'powershell' in self.config.run.shell:
+            glue = '\n'
+        return glue.join(prefixes + [command])
 
     @contextmanager
     def prefix(self, command):
