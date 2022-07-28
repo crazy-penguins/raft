@@ -10,7 +10,7 @@ requirements:
 	  && pip install -e .
 
 test:
-	source .py37/bin/activate \
+	source bin/activate \
 	  && python -B -O -m pytest --maxfail=1 \
 	      --capture=no \
 	      --cov --cov-report term-missing \
