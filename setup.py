@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 import sys
 
 # Version info -- read without importing
-version = '1.4'
+version = '1.5'
 
 # PyYAML ships a split Python 2/3 codebase. Unfortunately, some pip versions
 # attempt to interpret both halves of PyYAML, yielding SyntaxErrors. Thus, we

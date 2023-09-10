@@ -38,4 +38,4 @@ upload:
 	source bin/activate \
 	  && twine upload dist/*
 
-publish: clean version upload
+publish: clean version build upload
