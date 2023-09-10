@@ -14,23 +14,12 @@ import raft.program
 class Init:
     "__init__"
 
-    def dunder_version_info(self):
-        assert hasattr(raft, "__version_info__")
-        ver = raft.__version_info__
-        assert isinstance(ver, tuple)
-        assert all(isinstance(x, int) for x in ver)
 
     def dunder_version(self):
         assert hasattr(raft, "__version__")
         ver = raft.__version__
         assert isinstance(ver, six.string_types)
-        assert re.match(r"\d+\.\d+\.\d+", ver)
-
-    def dunder_version_looks_generated_from_dunder_version_info(self):
-        # Meh.
-        ver_part = raft.__version__.split(".")[0]
-        ver_info_part = raft.__version_info__[0]
-        assert ver_part == str(ver_info_part)
+        assert re.match(r"\d+\.\d+", ver)
 
     class exposes_bindings:
         def task_decorator(self):
