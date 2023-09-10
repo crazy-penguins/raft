@@ -1,4 +1,4 @@
-from ._version import __version_info__, __version__  # noqa
+from ._version import __version__  # noqa
 from .collection import Collection  # noqa
 from .config import Config  # noqa
 from .context import Context, MockContext  # noqa

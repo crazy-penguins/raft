@@ -17,3 +17,4 @@ coverage.xml
 /.idea
 /lib64
 /pyvenv.cfg
+/share/

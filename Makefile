@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 setup: venv requirements
 venv:
-	[[ -e ./bin/python ]] || python3.8 -m venv .	
+	[[ -e ./bin/python ]] || python3.11 -m venv .	
 
 requirements:
 	source bin/activate \
@@ -24,6 +24,10 @@ build:
 	  && python -B -O setup.py sdist 
 	  # && python -B -O setup.py bdist_wheel
 
+version:
+	source bin/activate \
+	  && bumpversion minor
+
 clean:
 	source bin/activate \
 	  && python -B -O setup.py clean
@@ -34,4 +38,4 @@ upload:
 	source bin/activate \
 	  && twine upload dist/*
 
-deploy: clean build upload
+publish: clean version upload

@@ -6,10 +6,7 @@ from setuptools import setup, find_packages
 import sys
 
 # Version info -- read without importing
-_locals = {}
-with open("raft/_version.py") as fp:
-    exec(fp.read(), None, _locals)
-version = _locals["__version__"]
+version = '1.4'
 
 # PyYAML ships a split Python 2/3 codebase. Unfortunately, some pip versions
 # attempt to interpret both halves of PyYAML, yielding SyntaxErrors. Thus, we
@@ -60,6 +57,9 @@ setup(
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
+        "Programming Language :: Python :: 3.9",
+        "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "Topic :: Software Development",
         "Topic :: Software Development :: Build Tools",
         "Topic :: Software Development :: Libraries",
