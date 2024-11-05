@@ -1,6 +1,6 @@
 from threading import Thread, Event
 
-from raft.vendor.six.moves.queue import Queue, Empty
+from queue import Queue, Empty
 
 from raft import Responder, FailingResponder, ResponseNotAccepted
 

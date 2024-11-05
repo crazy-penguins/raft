@@ -28,8 +28,9 @@ class Context_:
     # tests within 'add_arg'.  Some of this behavior is technically driven by
     # add_arg.
     class args:
-        def setup(self):
-            self.c = Context(
+        @classmethod
+        def setup_class(cls):
+            cls.c = Context(
                 args=(
                     Argument("foo"),
                     Argument(names=("bar", "biz")),
@@ -56,7 +57,7 @@ class Context_:
             assert "wat" not in self.c.flags
 
     class add_arg:
-        def setup(self):
+        def setup_method(self):
             self.c = Context()
 
         def can_take_Argument_instance(self):
@@ -134,12 +135,13 @@ class Context_:
     class deepcopy:
         "__deepcopy__"
 
-        def setup(self):
-            self.arg = Argument("--boolean")
-            self.orig = Context(
-                name="mytask", args=(self.arg,), aliases=("othername",)
+        @classmethod
+        def setup_class(cls):
+            cls.arg = Argument("--boolean")
+            cls.orig = Context(
+                name="mytask", args=(cls.arg,), aliases=("othername",)
             )
-            self.new = copy.deepcopy(self.orig)
+            cls.new = copy.deepcopy(cls.orig)
 
         def returns_correct_copy(self):
             assert self.new is not self.orig
@@ -157,9 +159,10 @@ class Context_:
             assert not self.arg.value
 
     class help_for:
-        def setup(self):
+        @classmethod
+        def setup_class(cls):
             # Normal, non-task/collection related Context
-            self.vanilla = Context(
+            cls.vanilla = Context(
                 args=(Argument("foo"), Argument("bar", help="bar the baz"))
             )
             # Task/Collection generated Context
@@ -169,7 +172,7 @@ class Context_:
                 pass
 
             col = Collection(mytask)
-            self.tasked = col.to_contexts()[0]
+            cls.tasked = col.to_contexts()[0]
 
         def raises_ValueError_for_non_flag_values(self):
             with raises(ValueError):

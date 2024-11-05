@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 setup: venv requirements
 venv:
-	[[ -e ./bin/python ]] || python3.11 -m venv .	
+	[[ -e ./bin/python ]] || python3.12 -m venv .
 
 requirements:
 	source bin/activate \

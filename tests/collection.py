@@ -1,14 +1,10 @@
 from __future__ import print_function
 
 import operator
-
-from raft.util import reduce
-
+import functools
 from pytest import raises
-
 from raft.collection import Collection
 from raft.tasks import task, Task
-
 from _util import load, support_path
 
 
@@ -89,6 +85,7 @@ class Collection_:
             assert Collection(auto_dash_names=False).auto_dash_names is False
 
     class useful_special_methods:
+        @classmethod
         def _meh(self):
             @task
             def task1(c):
@@ -105,8 +102,9 @@ class Collection_:
             submeh = Collection("submeh", task3)
             return Collection("meh", task1, task2, submeh)
 
-        def setup(self):
-            self.c = self._meh()
+        @classmethod
+        def setup_class(cls):
+            cls.c = cls._meh()
 
         def repr_(self):
             "__repr__"
@@ -151,13 +149,15 @@ class Collection_:
             assert not Collection(foo=Collection())
 
     class from_module:
-        def setup(self):
-            self.c = Collection.from_module(load("integration"))
+        @classmethod
+        def setup_class(cls):
+            cls.c = Collection.from_module(load("integration"))
 
         class parameters:
-            def setup(self):
-                self.mod = load("integration")
-                self.from_module = Collection.from_module
+            @classmethod
+            def setup_class(cls):
+                cls.mod = load("integration")
+                cls.from_module = Collection.from_module
 
             def name_override(self):
                 assert self.from_module(self.mod).name == "integration"
@@ -235,7 +235,8 @@ class Collection_:
             assert c3 is not c4
 
         class explicit_root_ns:
-            def setup(self):
+            @classmethod
+            def setup_class(cls):
                 mod = load("explicit_root")
                 mod.ns.configure(
                     {
@@ -245,8 +246,8 @@ class Collection_:
                     }
                 )
                 mod.ns.name = "builtin_name"
-                self.unchanged = Collection.from_module(mod)
-                self.changed = Collection.from_module(
+                cls.unchanged = Collection.from_module(mod)
+                cls.changed = Collection.from_module(
                     mod,
                     name="override_name",
                     config={
@@ -281,7 +282,7 @@ class Collection_:
                 assert self.changed.__doc__.strip() == expected
 
     class add_task:
-        def setup(self):
+        def setup_method(self, name):
             self.c = Collection()
 
         def associates_given_callable_with_given_name(self):
@@ -350,8 +351,9 @@ class Collection_:
                 assert self.c[x] is self.c["biz"]
 
     class add_collection:
-        def setup(self):
-            self.c = Collection()
+        @classmethod
+        def setup_class(cls):
+            cls.c = Collection()
 
         def adds_collection_as_subcollection_of_self(self):
             c2 = Collection("foo")
@@ -379,7 +381,7 @@ class Collection_:
     class getitem:
         "__getitem__"
 
-        def setup(self):
+        def setup_method(self):
             self.c = Collection()
 
         def finds_own_tasks_by_name(self):
@@ -425,7 +427,8 @@ class Collection_:
                 self.c["whatever"]
 
     class to_contexts:
-        def setup(self):
+        @classmethod
+        def setup_class(cls):
             @task
             def mytask(c, text, boolean=False, number=5):
                 print(text)
@@ -439,12 +442,12 @@ class Collection_:
                 pass
 
             sub = Collection("sub", subtask)
-            self.c = Collection(mytask, mytask2, sub)
-            self.contexts = self.c.to_contexts()
-            alias_tups = [list(x.aliases) for x in self.contexts]
-            self.aliases = reduce(operator.add, alias_tups, [])
+            cls.c = Collection(mytask, mytask2, sub)
+            cls.contexts = cls.c.to_contexts()
+            alias_tups = [list(x.aliases) for x in cls.contexts]
+            cls.aliases = functools.reduce(operator.add, alias_tups, [])
             # Focus on 'mytask' as it has the more interesting sig
-            self.context = [x for x in self.contexts if x.name == "mytask"][0]
+            cls.context = [x for x in cls.contexts if x.name == "mytask"][0]
 
         def returns_iterable_of_Contexts_corresponding_to_tasks(self):
             assert self.context.name == "mytask"
@@ -576,8 +579,9 @@ class Collection_:
             assert "mytask27" in self.aliases
 
     class task_names:
-        def setup(self):
-            self.c = Collection.from_module(load("explicit_root"))
+        @classmethod
+        def setup_class(cls):
+            cls.c = Collection.from_module(load("explicit_root"))
 
         def returns_all_task_names_including_subtasks(self):
             names = set(self.c.task_names.keys())
@@ -592,7 +596,7 @@ class Collection_:
     class configuration:
         "Configuration methods"
 
-        def setup(self):
+        def setup_method(self):
             self.root = Collection()
             self.task = Task(_func, name="task")
 

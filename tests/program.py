@@ -1156,13 +1156,14 @@ Default 'build' task: .all
                     )
 
             class json:
-                def setup(self):
+                @classmethod
+                def setup_class(cls):
                     # Stored expected data as an actual JSON file cuz it's big
                     # & looks like crap if inlined. Plus by round-tripping it
                     # we remove the pretty-printing. Win-win?
-                    self.tree = json.loads(support_file("tree.json"))
-                    self.by_name = {
-                        x["name"]: x for x in self.tree["collections"]
+                    cls.tree = json.loads(support_file("tree.json"))
+                    cls.by_name = {
+                        x["name"]: x for x in cls.tree["collections"]
                     }
 
                 def base_case(self):

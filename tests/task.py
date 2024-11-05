@@ -21,13 +21,15 @@ def _func(c):
 class task_:
     "@task"
 
-    def _load(self, name):
-        mod, _ = self.loader.load(name)
+    @classmethod
+    def _load(cls, name):
+        mod, _ = cls.loader.load(name)
         return Collection.from_module(mod)
 
-    def setup(self):
-        self.loader = Loader(start=support)
-        self.vanilla = self._load("decorators")
+    @classmethod
+    def setup_class(cls):
+        cls.loader = Loader(start=support)
+        cls.vanilla = cls._load("decorators")
 
     def allows_access_to_wrapped_object(self):
         def lolcats(c):
@@ -208,7 +210,7 @@ class Task_:
             assert Task(_func, name="foo").name == "foo"
 
     class callability:
-        def setup(self):
+        def setup_method(self):
             @task
             def foo(c):
                 "My docstring"
@@ -251,7 +253,7 @@ class Task_:
             assert self.task.__name__ == "foo"
 
     class get_arguments:
-        def setup(self):
+        def setup_method(self):
             @task(positional=["arg_3", "arg1"], optional=["arg1"])
             def mytask(c, arg1, arg2=False, arg_3=5):
                 pass
@@ -376,7 +378,7 @@ _ = object()
 
 
 class Call_:
-    def setup(self):
+    def setup_method(self):
         self.task = Task(Mock(__name__="mytask"))
 
     class init:

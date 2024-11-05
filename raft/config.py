@@ -910,7 +910,7 @@ class Config(DataProxy):
 
     def _load_yaml(self, path):
         with open(path) as fd:
-            return yaml.load(fd)
+            return yaml.load(fd, Loader=yaml.SafeLoader)
 
     def _load_yml(self, path):
         return self._load_yaml(path)

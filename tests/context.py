@@ -62,7 +62,7 @@ class Context_:
     class configuration_proxy:
         "Dict-like proxy for self.config"
 
-        def setup(self):
+        def setup_method(self):
             config = Config(defaults={"foo": "bar", "biz": {"baz": "boz"}})
             self.c = Context(config=config)
 
@@ -132,8 +132,9 @@ class Context_:
             assert self.c.biz.otherbaz == "otherboz"
 
     class cwd:
-        def setup(self):
-            self.c = Context()
+        @classmethod
+        def setup_class(cls):
+            cls.c = Context()
 
         def simple(self):
             self.c.command_cwds = ["a", "b"]
@@ -152,8 +153,9 @@ class Context_:
             assert self.c.cwd == os.path.join("~b", "c")
 
     class cd:
-        def setup(self):
-            self.escaped_prompt = re.escape(Config().sudo.prompt)
+        @classmethod
+        def setup_class(cls):
+            cls.escaped_prompt = re.escape(Config().sudo.prompt)
 
         @patch(local_path)
         def should_apply_to_run(self, Local):
@@ -208,8 +210,9 @@ class Context_:
             assert runner.run.call_args[0][0] == "ls"
 
     class prefix:
-        def setup(self):
-            self.escaped_prompt = re.escape(Config().sudo.prompt)
+        @classmethod
+        def setup_class(cls):
+            cls.escaped_prompt = re.escape(Config().sudo.prompt)
 
         @patch(local_path)
         def prefixes_should_apply_to_run(self, Local):
@@ -276,8 +279,9 @@ class Context_:
             assert runner.run.call_args[0][0] == "ls"
 
     class sudo:
-        def setup(self):
-            self.escaped_prompt = re.escape(Config().sudo.prompt)
+        @classmethod
+        def setup_class(cls):
+            cls.escaped_prompt = re.escape(Config().sudo.prompt)
 
         @patch(local_path)
         def prefixes_command_with_sudo(self, Local):
@@ -377,12 +381,13 @@ class Context_:
             self._expect_responses(expected, config=config, kwargs=kwargs)
 
         class auto_response_merges_with_other_responses:
-            def setup(self):
+            @classmethod
+            def setup_class(cls):
                 class DummyWatcher(StreamWatcher):
                     def submit(self, stream):
                         pass
 
-                self.watcher_klass = DummyWatcher
+                cls.watcher_klass = DummyWatcher
 
             @patch(local_path)
             def kwarg_only_adds_to_kwarg(self, Local):

@@ -631,15 +631,16 @@ class Runner_:
                     assert repr(e) == expected.format(_)
 
         class UnexpectedExit_str:
-            def setup(self):
+            @classmethod
+            def setup_class(cls):
                 def lines(prefix):
                     prefixed = "\n".join(
                         "{} {}".format(prefix, x) for x in range(1, 26)
                     )
                     return prefixed + "\n"
 
-                self._stdout = lines("stdout")
-                self._stderr = lines("stderr")
+                cls._stdout = lines("stdout")
+                cls._stderr = lines("stderr")
 
             @trap
             def displays_command_and_exit_code_by_default(self):
@@ -1723,8 +1724,9 @@ class Result_:
         assert repr(Result(command="foo")) == "<Result cmd='foo' exited=0>"
 
     class tail:
-        def setup(self):
-            self.sample = "\n".join(str(x) for x in range(25))
+        @classmethod
+        def setup_class(cls):
+            cls.sample = "\n".join(str(x) for x in range(25))
 
         def returns_last_10_lines_of_given_stream_plus_whitespace(self):
             expected = """

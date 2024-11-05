@@ -8,7 +8,8 @@ class CLIParsing:
     High level parsing tests
     """
 
-    def setup(self):
+    @classmethod
+    def setup_class(cls):
         @task(positional=[], iterable=["my_list"], incrementable=["verbose"])
         def my_task(
             c,
@@ -43,7 +44,7 @@ class CLIParsing:
             pass
 
         sub_coll = Collection("sub_coll", sub_task)
-        self.c = Collection(my_task, my_task2, my_task3, my_task4, sub_coll)
+        cls.c = Collection(my_task, my_task2, my_task3, my_task4, sub_coll)
 
     def _parser(self):
         return Parser(self.c.to_contexts())

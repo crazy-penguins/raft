@@ -1,7 +1,8 @@
-import imp
 import os
 import sys
-import types
+from importlib.util import spec_from_file_location
+from types import ModuleType
+from pathlib import Path
 
 from pytest import raises
 
@@ -21,8 +22,13 @@ class _BasicLoader(Loader):
     """
 
     def find(self, name):
-        self.fd, self.path, self.desc = t = imp.find_module(name, [support])
-        return t
+        path = os.path.join(support, name)
+        if os.path.exists(f"{path}.py"):
+            path = f"{path}.py"
+        elif os.path.exists(path):
+            path = os.path.join(path, "__init__.py")
+        spec = spec_from_file_location(name, path)
+        return spec
 
 
 class Loader_:
@@ -33,7 +39,7 @@ class Loader_:
 
     def returns_module_and_location(self):
         mod, path = _BasicLoader().load("namespacing")
-        assert isinstance(mod, types.ModuleType)
+        assert isinstance(mod, ModuleType)
         assert path == support
 
     def may_configure_config_via_constructor(self):
@@ -45,22 +51,21 @@ class Loader_:
         # Crummy doesn't-explode test.
         _BasicLoader().load("namespacing")
 
-    def doesnt_dupliate_parent_dir_addition(self):
+    def doesnt_duplicate_parent_dir_addition(self):
         _BasicLoader().load("namespacing")
         _BasicLoader().load("namespacing")
         # If the bug is present, this will be 2 at least (and often more, since
         # other tests will pollute it (!).
         assert sys.path.count(support) == 1
 
-    def closes_opened_file_object(self):
-        loader = _BasicLoader()
-        loader.load("foo")
-        assert loader.fd.closed
-
     def can_load_package(self):
         loader = _BasicLoader()
-        # make sure it doesn't explode
-        loader.load("package")
+        # Load itself doesn't explode (tests 'from . import xxx' internally)
+        mod, enclosing_dir = loader.load("package")
+        # Properties of returned values look as expected
+        # (enclosing dir is always the one above the module-or-package)
+        assert enclosing_dir == support
+        assert mod.__file__ == str(Path(support) / "package" / "__init__.py")
 
     def load_name_defaults_to_config_tasks_collection_name(self):
         "load() name defaults to config.tasks.collection_name"
@@ -69,7 +74,7 @@ class Loader_:
             def find(self, name):
                 # Sanity
                 assert name == "simple_ns_list"
-                return super(MockLoader, self).find(name)
+                return super().find(name)
 
         config = Config({"tasks": {"collection_name": "simple_ns_list"}})
         loader = MockLoader(config=config)
@@ -79,7 +84,7 @@ class Loader_:
 
 
 class FilesystemLoader_:
-    def setup(self):
+    def setup_method(self):
         self.loader = FSLoader(start=support)
 
     def discovery_start_point_defaults_to_cwd(self):
@@ -89,7 +94,7 @@ class FilesystemLoader_:
         assert FSLoader().start == os.getcwd()
 
     def start_point_is_configurable_via_kwarg(self):
-        start = "/tmp/"
+        start = "/tmp"
         assert FSLoader(start=start).start == start
 
     def start_point_is_configurable_via_config(self):
@@ -102,8 +107,10 @@ class FilesystemLoader_:
 
     def raises_ImportError_if_found_collection_cannot_be_imported(self):
         # Instead of masking with a CollectionNotFound
-        with raises(ImportError):
+        with raises(ModuleNotFoundError):
             self.loader.load("oops")
+
+    # TODO: Need CollectionImportError here
 
     def searches_towards_root_of_filesystem(self):
         # Loaded while root is in same dir as .py
@@ -111,4 +118,6 @@ class FilesystemLoader_:
         # Loaded while root is multiple dirs deeper than the .py
         deep = os.path.join(support, "ignoreme", "ignoremetoo")
         indirectly = FSLoader(start=deep).load("foo")
-        assert directly == indirectly
+        assert directly[0].__file__ == indirectly[0].__file__
+        assert directly[0].__spec__ == indirectly[0].__spec__
+        assert directly[1] == indirectly[1]
